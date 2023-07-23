@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/x-icon" href="./play.png">
+  <title>Online Video Player</title>
+
+
+  <link rel="stylesheet" href="style.css">
+  <script async src="https://kit.fontawesome.com/0c7cf3d8f9.js" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+  <button id="toggle_video_link_form_btn">
+    <i class="fa-solid fa-chevron-up" style="color: #ffffff;"></i>
+  </button>
+
+  <form onsubmit="return false" id="video_link_form">
+    <input type="url" id="video_link" placeholder="Video URL" autofocus required>
+    <button type="submit" id="submit_btn">
+      <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
+    </button>
+  </form>
+
+  <main id="video_container">
+    <button id="center_btn">
+      <i style="color: #ffffff;"></i>
+    </button>
+    <div id="controls">
+      <div id="time_controls_container">
+        <input id="time_range" type="range" value="0" min="0" max="100" step="0.000000000001" style="padding: 0;">
+        <span id="time_value">00:00:00</span>
+      </div>
+      <div id="control_buttons">
+        <div class="controls_grp left_controls">
+          <button class="control_btn" id="resetTime" onclick="player.resetTime()">
+            <i class="fa-solid fa-stop" style="color: #ffffff;"></i>
+          </button>
+          <div id="volume_controls_container">
+            <button class="control_btn" id="toggleMute" onclick="player.toggleMute()">
+              <i class="fa-solid fa-volume-high" style="color: #ffffff;"></i>
+              <!-- <i class="fa-solid fa-volume-high" style="color: #ffffff;"></i> -->
+            </button>
+            <input type="range" id="volume" name="volume" min="0" max="100" step="0.01" value="100"
+              style="padding: 0; max-width: 60px;">
+          </div>
+        </div>
+        <div class="controls_grp center_controls">
+          <button class="control_btn" id="back" onclick="player.backward()">
+            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
+            <!-- <i class="fa-solid fa-backward" style="color: #ffffff;"></i> -->
+          </button>
+          <button class="control_btn" id="playPause" onclick="player.playPause()">
+            <i class="fa-solid fa-play" style="color: #ffffff;"></i>
+            <!-- <i class="fa-solid fa-pause" style="color: #ffffff;"></i> -->
+          </button>
+          <button class="control_btn" id="forward" onclick="player.forward()">
+            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
+            <!-- <i class="fa-solid fa-forward" style="color: #ffffff;"></i> -->
+          </button>
+        </div>
+        <div class="controls_grp right_controls">
+          <button class="control_btn" id="settings" onclick="showSettingsMenu()">
+            <i class="fa-solid fa-gear" style="color: #ffffff;"></i>
+          </button>
+          <button class="control_btn" id="fullscreen" onclick="player.fullScreen()">
+            <i class="fa-solid fa-expand" style="color: #ffffff;"></i>
+            <!-- <i class="fa-solid fa-compress" style="color: #ffffff;"></i> -->
+          </button>
+        </div>
+      </div>
+    </div>
+    <video src="" id="main_vid" width="100%"></video>
+  </main>
+
+</body>
+
+</html>
