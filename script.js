@@ -256,10 +256,11 @@ $(function () {
   });
 
   player.video.onclick = () => {
-    $("#controls").fadeToggle(200);
+    $("#controls").fadeToggle(300);
     counter = 0;
   };
   player.video.ondblclick = () => {
     player.playPause();
+    counter = 0;
   };
 });
