@@ -255,10 +255,10 @@ $(function () {
       });
   });
 
-  /* player.video.onclick = () => {
+  player.video.onclick = () => {
     $("#controls").fadeToggle(300);
-    counter = 0;
-  }; */
+    counter = 6;
+  };
   player.video.ondblclick = () => {
     player.playPause();
     counter = 0;
