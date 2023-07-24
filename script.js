@@ -88,7 +88,7 @@ class Player {
           navigator.userAgent
         )
       ) {
-        screen.orientation.lock("landscape-primary");
+        screen.orientation.lock("landscape");
       }
     }
   }
