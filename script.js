@@ -1,5 +1,4 @@
 function getCurrentTime(currentTime) {
-  console.log(currentTime);
   let seconds = Math.floor(currentTime % 60).toString();
   let minutes = Math.floor((currentTime / 60) % 60).toString();
   let hours = Math.floor(currentTime / 3600).toString();
@@ -32,15 +31,20 @@ class Player {
 
   playPause() {
     const playPauseIcon = $("#playPause i");
+    const centerBtn = $("#center_btn i");
     if (this.video.paused) {
       // playing....
-      playPauseIcon.addClass("fa-pause");
       playPauseIcon.removeClass("fa-play");
+      centerBtn.removeClass("fa-play");
+      playPauseIcon.addClass("fa-pause");
+      centerBtn.addClass("fa-pause");
       this.video.play();
     } else {
       // pausing...
-      playPauseIcon.addClass("fa-play");
       playPauseIcon.removeClass("fa-pause");
+      centerBtn.removeClass("fa-pause");
+      playPauseIcon.addClass("fa-play");
+      centerBtn.addClass("fa-play");
       this.video.pause();
     }
   }
@@ -51,12 +55,12 @@ class Player {
   }
   forward() {
     this.video.currentTime += 10;
-    this.animateCenterBtn("fa-forward");
+    this.animateActionsBtn("forward");
     this.updateTime();
   }
   backward() {
     this.video.currentTime -= 10;
-    this.animateCenterBtn("fa-backward");
+    this.animateActionsBtn("backward");
     this.updateTime();
   }
 
@@ -83,35 +87,27 @@ class Player {
       screen.orientation.unlock();
     } else {
       videoContainer.requestFullscreen();
-      if (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        )
-      ) {
-        screen.orientation.lock("landscape");
-      }
+      screen.orientation.lock("landscape");
     }
   }
 
   toggleMute() {
     this.video.muted = !this.video.muted;
-    this.animateCenterBtn(
-      this.video.muted ? "fa-volume-xmark" : "fa-volume-high"
-    );
+    this.animateActionsBtn(this.video.muted ? "mute" : "volume-high");
     $("#toggleMute i").toggleClass("fa-volume-xmark fa-volume-high");
   }
 
   volumeUp() {
     if (this.video.volume > 0.9) return;
     this.video.volume += 0.1;
-    this.animateCenterBtn("fa-volume-high");
+    this.animateActionsBtn("volume-high");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
   }
   volumeDown() {
     if (this.video.volume < 0.1) return;
     this.video.volume -= 0.1;
-    this.animateCenterBtn("fa-volume-low");
+    this.animateActionsBtn("volume-low");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
   }
@@ -124,14 +120,27 @@ class Player {
     this.video.src = newSrc;
   }
 
-  animateCenterBtn(iconClass) {
-    $("#center_btn i").addClass("fa-solid " + iconClass);
+  animateActionsBtn(iconName) {
+    $("#actions_viewer img").attr("src", `./icons/${iconName}.svg`);
     setTimeout(() => {
-      $("#center_btn").fadeIn(300).fadeOut(600);
+      $("#actions_viewer").fadeIn(300).fadeOut(600);
       setTimeout(() => {
-        $("#center_btn i").removeClass("fa-solid " + iconClass);
+        $("#actions_viewer img").removeAttr("src");
       }, 1000);
     }, 200);
+  }
+
+  hideControls(animationDuration) {
+    $("#controls").fadeOut(animationDuration);
+    $("#center_btn").fadeOut(animationDuration);
+  }
+  showControls(animationDuration) {
+    $("#controls").fadeIn(animationDuration);
+    $("#center_btn").fadeIn(animationDuration);
+  }
+  toggleControls(animationDuration) {
+    $("#controls").fadeToggle(animationDuration);
+    $("#center_btn").fadeToggle(animationDuration);
   }
 }
 
@@ -145,14 +154,18 @@ let player = new Player(
 $(function () {
   $("#video_link_form").on("submit", function (e) {
     e.preventDefault();
-    player = new Player(
-      document.getElementById("main_vid"),
-      document.getElementById("time_value"),
-      document.getElementById("time_range")
-    );
-    player.changeSrc($("#video_link").val());
-    $("#toggle_video_link_form_btn").click();
-    player.playPause();
+    try {
+      player = new Player(
+        document.getElementById("main_vid"),
+        document.getElementById("time_value"),
+        document.getElementById("time_range")
+      );
+      player.changeSrc($("#video_link").val());
+      $("#toggle_video_link_form_btn").click();
+      player.playPause();
+    } catch (error) {
+      throw new Error("Error: " + error);
+    }
   });
 
   $(document).on("keydown", function (e) {
@@ -204,25 +217,13 @@ $(function () {
   let counter = 0;
   let counterInterval = setInterval(() => {
     counter++;
-    if (counter > 5) {
-      $("#controls").fadeOut(800);
+    if (counter > 3) {
+      player.hideControls(400);
     }
   }, 1000);
 
   $("#time_range").on("mousemove", function (e) {
     $(this).css("--indicator-left-pos", e.clientX - 12 + "px");
-  });
-
-  $(document).on("mousemove", function (e) {
-    $("#controls").fadeIn(300);
-    clearInterval(counterInterval);
-    counter = 0;
-    counterInterval = setInterval(() => {
-      counter++;
-      if (counter > 5) {
-        $("#controls").fadeOut(800);
-      }
-    }, 1000);
   });
 
   $("#time_range").on("input", function () {
@@ -234,33 +235,69 @@ $(function () {
     player.changeVolume($(this).val());
   });
 
-  $("#videoLeftSide").on("dblclick", function () {
-    player.backward();
-    $(this)
-      .animate({
-        opacity: 1,
-      })
-      .animate({
-        opacity: 0,
-      });
-  });
-  $("#videoRightSide").on("dblclick", function () {
-    player.forward();
-    $(this)
-      .animate({
-        opacity: 1,
-      })
-      .animate({
-        opacity: 0,
-      });
-  });
-
   player.video.onclick = () => {
-    $("#controls").fadeToggle(300);
-    counter = 6;
+    player.toggleControls(200);
+    counter = 0;
   };
   player.video.ondblclick = () => {
     player.playPause();
     counter = 0;
   };
+
+  // $(document).on("click input mousemove mousedown", function (e) {
+  //   player.showControls(200);
+  //   counter = 0;
+  // });
+  $("#volume").on("click input mousemove mousedown", function (e) {
+    player.showControls(200);
+    counter = 0;
+  });
+
+  //
+  //
+  // * Phone features Only
+  //
+  if (!window.matchMedia("(hover: hover)").matches) {
+    // let dblclickLeft, dblclickRight = null;
+    $("#videoLeftSide").on("dblclick", function () {
+      console.log("dblclick left");
+      player.backward();
+      $(this)
+      .animate({
+        opacity: 1,
+      })
+      .animate({
+        opacity: 0,
+      });
+    });
+    $("#videoRightSide").on("dblclick", function () {
+      console.log("dblclick right");
+      player.forward();
+      $(this)
+        .animate({
+          opacity: 1,
+        })
+        .animate({
+          opacity: 0,
+        });
+    });
+  } else {
+    //
+    //
+    // * PC features Only
+    //
+
+    $(document).on("mousemove", function () {
+      player.showControls(200);
+      counter = 0;
+    });
+
+    player.video.onclick = () => {
+      player.playPause();
+      counter = 0;
+    };
+    player.video.ondblclick = () => {
+      player.fullScreen();
+    };
+  }
 });
