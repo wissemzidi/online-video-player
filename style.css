@@ -153,6 +153,28 @@ input {
   transition: all ease 0.3s;
   z-index: 1;
 }
+
+#videoLeftSide,
+#videoRightSide {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(104, 104, 104, 0.15);
+  opacity: 0;
+  z-index: 1;
+}
+#videoLeftSide {
+  left: 0;
+  right: 65%;
+  border-top-right-radius: 5rem;
+  border-bottom-right-radius: 5rem;
+}
+#videoRightSide {
+  right: 0;
+  left: 65%;
+  border-top-left-radius: 5rem;
+  border-bottom-left-radius: 5rem;
+}
+
 #controls {
   position: absolute;
   bottom: 0;

@@ -1,7 +1,8 @@
 function getCurrentTime(currentTime) {
-  let seconds = Math.round(currentTime % 60).toString();
-  let minutes = Math.round((currentTime / 60) % 60).toString();
-  let hours = Math.round(currentTime / 60 / 60).toString();
+  console.log(currentTime);
+  let seconds = Math.floor(currentTime % 60).toString();
+  let minutes = Math.floor((currentTime / 60) % 60).toString();
+  let hours = Math.floor(currentTime / 3600).toString();
   seconds.length < 2 ? (seconds = "0" + seconds) : "";
   minutes.length < 2 ? (minutes = "0" + minutes) : "";
   hours.length < 2 ? (hours = "0" + hours) : "";
@@ -79,8 +80,16 @@ class Player {
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
       }
+      screen.orientation.unlock();
     } else {
       videoContainer.requestFullscreen();
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      ) {
+        screen.orientation.lock("landscape-primary");
+      }
     }
   }
 
@@ -153,39 +162,30 @@ $(function () {
         player.fullScreen();
         break;
       case "f":
-        e.preventDefault();
         player.fullScreen();
         break;
       case "F":
-        e.preventDefault();
         player.fullScreen();
         break;
       case "ArrowRight":
-        e.preventDefault();
         player.forward();
         break;
       case "ArrowLeft":
-        e.preventDefault();
         player.backward();
         break;
       case "ArrowUp":
-        e.preventDefault();
         player.volumeUp();
         break;
       case "ArrowDown":
-        e.preventDefault();
         player.volumeDown();
         break;
       case " ":
-        e.preventDefault();
         player.playPause();
         break;
       case "m":
-        e.preventDefault();
         player.toggleMute();
         break;
       case "M":
-        e.preventDefault();
         player.toggleMute();
         break;
     }
@@ -233,4 +233,33 @@ $(function () {
   $("#volume").on("input", function () {
     player.changeVolume($(this).val());
   });
+
+  $("#videoLeftSide").on("dblclick", function () {
+    player.backward();
+    $(this)
+      .animate({
+        opacity: 1,
+      })
+      .animate({
+        opacity: 0,
+      });
+  });
+  $("#videoRightSide").on("dblclick", function () {
+    player.forward();
+    $(this)
+      .animate({
+        opacity: 1,
+      })
+      .animate({
+        opacity: 0,
+      });
+  });
+
+  player.video.onclick = () => {
+    $("#controls").fadeToggle(200);
+    counter = 0;
+  };
+  player.video.ondblclick = () => {
+    player.playPause();
+  };
 });
