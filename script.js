@@ -93,22 +93,24 @@ class Player {
 
   toggleMute() {
     this.video.muted = !this.video.muted;
-    this.animateActionsBtn(this.video.muted ? "mute" : "volume-high");
+    this.animateActionsBtn(this.video.muted ? "mute" : "volumeMax");
     $("#toggleMute i").toggleClass("fa-volume-xmark fa-volume-high");
   }
 
   volumeUp() {
-    if (this.video.volume > 0.9) return;
+    if (this.video.volume > 0.9) {
+      this.changeVolume(1);
+      return;
+    };
     this.video.volume += 0.1;
     this.animateActionsBtn("volumeUp");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
   }
   volumeDown() {
-    if (this.video.volume < 0.1) {
-      // !
-      console.log(("hello"));
-      return
+    if (this.video.volume <= 0.1) {
+      this.changeVolume(0);
+      return;
     };
     this.video.volume -= 0.1;
     this.animateActionsBtn("volumeDown");
@@ -116,6 +118,16 @@ class Player {
     $("#volume").val(this.video.volume * 100);
   }
   changeVolume(newVolume) {
+    if (newVolume <= 0.1) {
+      this.video.volume = 0;
+      this.animateActionsBtn("mute");
+      return;
+    }
+    if (newVolume >= 0.9) {
+      this.video.volume = 1;
+      this.animateActionsBtn("volumeMax");
+      return;
+    }
     this.video.volume = newVolume / 100;
     $("#volume").css("--volume", newVolume + "%");
   }
