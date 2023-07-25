@@ -100,14 +100,18 @@ class Player {
   volumeUp() {
     if (this.video.volume > 0.9) return;
     this.video.volume += 0.1;
-    this.animateActionsBtn("volume-high");
+    this.animateActionsBtn("volumeUp");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
   }
   volumeDown() {
-    if (this.video.volume < 0.1) return;
+    if (this.video.volume < 0.1) {
+      // !
+      console.log(("hello"));
+      return
+    };
     this.video.volume -= 0.1;
-    this.animateActionsBtn("volume-low");
+    this.animateActionsBtn("volumeDown");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
   }
@@ -122,12 +126,7 @@ class Player {
 
   animateActionsBtn(iconName) {
     $("#actions_viewer img").attr("src", `./icons/${iconName}.svg`);
-    setTimeout(() => {
-      $("#actions_viewer").fadeIn(300).fadeOut(600);
-      setTimeout(() => {
-        $("#actions_viewer img").removeAttr("src");
-      }, 1000);
-    }, 200);
+    $("#actions_viewer").fadeTo(100, 0.5).fadeOut(100);
   }
 
   hideControls(animationDuration) {
@@ -258,28 +257,33 @@ $(function () {
   // * Phone features Only
   //
   if (!window.matchMedia("(hover: hover)").matches) {
-    // let dblclickLeft, dblclickRight = null;
-    $("#videoLeftSide").on("dblclick", function () {
-      console.log("dblclick left");
-      player.backward();
-      $(this)
-      .animate({
-        opacity: 1,
-      })
-      .animate({
-        opacity: 0,
-      });
+    $(player.video).on("click", player.showControls(200));
+
+    let dblclickLeft = null;
+    // let dblclickTimer = setTimeout();
+    $("#videoLeftSide").on("click", function () {
+      if (dblclickLeft == null) {
+        dblclickLeft = true;
+        dblclickTimer = setTimeout(() => {
+          dblclickLeft = null;
+        }, 300);
+      } else {
+        dblclickLeft = null;
+        clearTimeout(dblclickTimer);
+        player.backward();
+        $(this).css("opacity", 1);
+        setTimeout(() => {
+          $(this).css("opacity", 0);
+        }, 300);
+      }
     });
-    $("#videoRightSide").on("dblclick", function () {
+    $("#videoRightSide").on("click", function () {
       console.log("dblclick right");
       player.forward();
-      $(this)
-        .animate({
-          opacity: 1,
-        })
-        .animate({
-          opacity: 0,
-        });
+      $(this).css("opacity", 1);
+      setTimeout(() => {
+        $(this).css("opacity", 0);
+      }, 300);
     });
   } else {
     //
