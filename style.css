@@ -226,6 +226,22 @@ input[type='text'] {
   gap: 1rem;
   justify-content: center;
 }
+.time_range_input_container {
+  width: 100%;
+  display: grid;
+  align-items: center;
+  position: relative;
+  isolation: isolate;
+}
+#bufferingIndicator {
+  --buffered-percentage: 0%;
+
+  position: absolute;
+  inset: 1px;
+  right: calc(100% - var(--buffered-percentage));
+  background-color: rgba(164, 164, 164, 0.5);
+  z-index: 1;
+}
 #time_range {
   --thumb-color: transparent;
   --current-percentage: 0%;
@@ -234,17 +250,17 @@ input[type='text'] {
 
   -webkit-appearance: none;
   position: relative;
-  min-width: calc(100% - 8ch);
+  min-width: 100%;
   height: 5px;
   background: rgba(255, 255, 255, 0.2);
   background-image: linear-gradient(red, red);
   background-size: var(--current-percentage) 100%;
   background-repeat: no-repeat;
-  backdrop-filter: blur(5px);
   border: 1px solid transparent;
   outline: none;
   transition: ease height 0.3s, border-color ease-out 0.3s;
   cursor: pointer;
+  z-index: 2;
 }
 #time_range:hover,
 #time_range:focus-visible {

@@ -10,14 +10,35 @@ function getCurrentTime(currentTime) {
 
 class Player {
   constructor(videoUrl, video, timeCount, timeRange) {
-    $("#main_vid").attr("src", videoUrl);
     this.videoUrl = videoUrl;
     this.video = video;
     this.timeCount = timeCount;
     this.timeRange = timeRange;
+
+    $("#main_vid").attr("src", videoUrl);
+
+    let time_interval = setInterval(function () {
+      player.updateTime();
+    }, 1000);
+    this.video.addEventListener("waiting", (e) => {
+      $(".spinner").show();
+    });
+    this.video.addEventListener("canplay", (e) => {
+      $(".spinner").hide();
+    });
   }
 
   updateTime() {
+    this.video.addEventListener("progress", (e) => {
+      let bufferedDuration = Math.round(
+        (this.video.buffered.end(this.video.buffered.length - 1) * 100) /
+          this.video.duration
+      );
+      $("#bufferingIndicator").css(
+        "--buffered-percentage",
+        bufferedDuration + "%"
+      );
+    });
     let { hours, minutes, seconds } = getCurrentTime(this.video.currentTime);
     $(this.timeCount).text(hours + ":" + minutes + ":" + seconds);
     $(this.timeRange).css(
@@ -159,6 +180,17 @@ class Player {
   }
 }
 
+function checkForVideo() {
+  document.getElementById("main_vid").addEventListener("loadeddata", (e) => {
+    if (document.getElementById("main_vid").readyState >= 3) {
+      $(".spinner").fadeOut(100);
+    } else {
+      $(".spinner").fadeIn(100);
+    }
+  });
+}
+checkForVideo();
+
 let player = new Player(
   "",
   document.getElementById("main_vid"),
@@ -171,7 +203,15 @@ $(function () {
   const urlParams = new URLSearchParams(window.location.search);
   const movieUrl = decodeURI(urlParams.get("url"));
 
-  if (movieUrl) {
+  console.log(movieUrl);
+
+  if (
+    movieUrl != "null" &&
+    movieUrl != null &&
+    movieUrl.trim() != "" &&
+    movieUrl != undefined
+  ) {
+    console.log("img here");
     try {
       player = new Player(
         movieUrl,
@@ -187,24 +227,9 @@ $(function () {
       alert("Error in the provided link");
       throw new Error("Error: " + error);
     }
+  } else {
+    window.location.href = "./entry.html";
   }
-
-  $("#video_link_form").on("submit", function (e) {
-    e.preventDefault();
-    try {
-      player = new Player(
-        $("#video_link").val(),
-        document.getElementById("main_vid"),
-        document.getElementById("time_value"),
-        document.getElementById("time_range")
-      );
-      $("#toggle_video_link_form_btn").click();
-      player.playPause();
-      player.fullScreen();
-    } catch (error) {
-      throw new Error("Error: " + error);
-    }
-  });
 
   $(document).on("keydown", function (e) {
     switch (e.key) {
@@ -247,9 +272,6 @@ $(function () {
     $("#toggle_video_link_form_btn i").toggleClass(
       "fa-chevron-up fa-chevron-down"
     );
-    let time_interval = setInterval(function () {
-      player.updateTime();
-    }, 1000);
   });
 
   let counter = 0;
