@@ -40,7 +40,7 @@ class Player {
       centerBtn.removeClass("fa-play");
       playPauseIcon.addClass("fa-pause");
       centerBtn.addClass("fa-pause");
-      this.animateActionsBtn("play");
+      this.animateActionsBtn("pause");
       this.video.play();
     } else {
       // pausing...
@@ -48,7 +48,7 @@ class Player {
       centerBtn.removeClass("fa-pause");
       playPauseIcon.addClass("fa-play");
       centerBtn.addClass("fa-play");
-      this.animateActionsBtn("pause");
+      this.animateActionsBtn("play");
       this.video.pause();
     }
   }
