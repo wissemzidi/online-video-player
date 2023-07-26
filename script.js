@@ -9,7 +9,9 @@ function getCurrentTime(currentTime) {
 }
 
 class Player {
-  constructor(video, timeCount, timeRange) {
+  constructor(videoUrl, video, timeCount, timeRange) {
+    $("#main_vid").attr("src", videoUrl);
+    this.videoUrl = videoUrl;
     this.video = video;
     this.timeCount = timeCount;
     this.timeRange = timeRange;
@@ -38,6 +40,7 @@ class Player {
       centerBtn.removeClass("fa-play");
       playPauseIcon.addClass("fa-pause");
       centerBtn.addClass("fa-pause");
+      this.animateActionsBtn("play");
       this.video.play();
     } else {
       // pausing...
@@ -45,6 +48,7 @@ class Player {
       centerBtn.removeClass("fa-pause");
       playPauseIcon.addClass("fa-play");
       centerBtn.addClass("fa-play");
+      this.animateActionsBtn("pause");
       this.video.pause();
     }
   }
@@ -93,69 +97,70 @@ class Player {
 
   toggleMute() {
     this.video.muted = !this.video.muted;
-    this.animateActionsBtn(this.video.muted ? "mute" : "volumeMax");
-    $("#toggleMute i").toggleClass("fa-volume-xmark fa-volume-high");
+    this.animateActionsBtn(this.video.muted ? "mute" : "volume");
+    if (this.video.muted) {
+      $("#volume").css("--volume", 0);
+      $("#volume").val(0);
+      $("#toggleMute img").attr("src", "./icons/mute.svg");
+    } else {
+      $("#volume").css("--volume", 100);
+      $("#volume").val(100);
+      $("#toggleMute img").attr("src", "./icons/volume.svg");
+    }
   }
 
   volumeUp() {
-    if (this.video.volume > 0.9) {
-      this.changeVolume(1);
-      return;
-    };
+    this.video.muted = false;
     this.video.volume += 0.1;
-    this.animateActionsBtn("volumeUp");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
+    this.animateActionsBtn("volumeUp");
   }
   volumeDown() {
-    if (this.video.volume <= 0.1) {
-      this.changeVolume(0);
-      return;
-    };
+    this.video.muted = false;
     this.video.volume -= 0.1;
-    this.animateActionsBtn("volumeDown");
     $("#volume").css("--volume", this.video.volume * 100 + "%");
     $("#volume").val(this.video.volume * 100);
+    this.animateActionsBtn("volumeDown");
   }
   changeVolume(newVolume) {
-    if (newVolume <= 0.1) {
-      this.video.volume = 0;
+    if (newVolume <= 0) {
+      $("#toggleMute img").attr("src", "./icons/mute.svg");
       this.animateActionsBtn("mute");
-      return;
+    } else {
+      this.video.muted = false;
+      $("#toggleMute img").attr("src", "./icons/volume.svg");
     }
-    if (newVolume >= 0.9) {
-      this.video.volume = 1;
-      this.animateActionsBtn("volumeMax");
-      return;
-    }
-    this.video.volume = newVolume / 100;
-    $("#volume").css("--volume", newVolume + "%");
-  }
 
-  changeSrc(newSrc) {
-    this.video.src = newSrc;
+    this.video.volume = newVolume / 100;
+    $("#volume").val(newVolume);
+    $("#volume").css("--volume", newVolume + "%");
   }
 
   animateActionsBtn(iconName) {
     $("#actions_viewer img").attr("src", `./icons/${iconName}.svg`);
-    $("#actions_viewer").fadeTo(100, 0.5).fadeOut(100);
+    $("#actions_viewer").fadeTo(150, 0.5).fadeOut(250);
   }
 
   hideControls(animationDuration) {
     $("#controls").fadeOut(animationDuration);
     $("#center_btn").fadeOut(animationDuration);
+    $("#dimmBg").fadeOut(animationDuration);
   }
   showControls(animationDuration) {
     $("#controls").fadeIn(animationDuration);
     $("#center_btn").fadeIn(animationDuration);
+    $("#dimmBg").fadeIn(animationDuration);
   }
   toggleControls(animationDuration) {
     $("#controls").fadeToggle(animationDuration);
     $("#center_btn").fadeToggle(animationDuration);
+    $("#dimmBg").fadeToggle(animationDuration);
   }
 }
 
 let player = new Player(
+  "",
   document.getElementById("main_vid"),
   document.getElementById("time_value"),
   document.getElementById("time_range")
@@ -163,17 +168,39 @@ let player = new Player(
 
 // on document ready
 $(function () {
-  $("#video_link_form").on("submit", function (e) {
-    e.preventDefault();
+  const urlParams = new URLSearchParams(window.location.search);
+  const movieUrl = decodeURI(urlParams.get("url"));
+
+  if (movieUrl) {
     try {
       player = new Player(
+        movieUrl,
         document.getElementById("main_vid"),
         document.getElementById("time_value"),
         document.getElementById("time_range")
       );
-      player.changeSrc($("#video_link").val());
+      player.fullScreen();
+      player.playPause();
+      $("#video_link_form").hide();
+      $("#toggle_video_link_form_btn").hide();
+    } catch (error) {
+      alert("Error in the provided link");
+      throw new Error("Error: " + error);
+    }
+  }
+
+  $("#video_link_form").on("submit", function (e) {
+    e.preventDefault();
+    try {
+      player = new Player(
+        $("#video_link").val(),
+        document.getElementById("main_vid"),
+        document.getElementById("time_value"),
+        document.getElementById("time_range")
+      );
       $("#toggle_video_link_form_btn").click();
       player.playPause();
+      player.fullScreen();
     } catch (error) {
       throw new Error("Error: " + error);
     }
@@ -246,20 +273,11 @@ $(function () {
     player.changeVolume($(this).val());
   });
 
-  player.video.onclick = () => {
-    player.toggleControls(200);
+  $(".control_btn").on("click", function () {
     counter = 0;
-  };
-  player.video.ondblclick = () => {
-    player.playPause();
-    counter = 0;
-  };
+  });
 
-  // $(document).on("click input mousemove mousedown", function (e) {
-  //   player.showControls(200);
-  //   counter = 0;
-  // });
-  $("#volume").on("click input mousemove mousedown", function (e) {
+  $("#volume").on("click input mousemove", function (e) {
     player.showControls(200);
     counter = 0;
   });
@@ -272,13 +290,12 @@ $(function () {
     $(player.video).on("click", player.showControls(200));
 
     let dblclickLeft = null;
-    // let dblclickTimer = setTimeout();
     $("#videoLeftSide").on("click", function () {
       if (dblclickLeft == null) {
         dblclickLeft = true;
         dblclickTimer = setTimeout(() => {
           dblclickLeft = null;
-        }, 300);
+        }, 200);
       } else {
         dblclickLeft = null;
         clearTimeout(dblclickTimer);
@@ -289,14 +306,29 @@ $(function () {
         }, 300);
       }
     });
+
+    let dblclickRight = null;
     $("#videoRightSide").on("click", function () {
-      console.log("dblclick right");
-      player.forward();
-      $(this).css("opacity", 1);
-      setTimeout(() => {
-        $(this).css("opacity", 0);
-      }, 300);
+      if (dblclickRight == null) {
+        dblclickRight = true;
+        dblclickTimer = setTimeout(() => {
+          dblclickRight = null;
+        }, 200);
+      } else {
+        dblclickRight = null;
+        clearTimeout(dblclickTimer);
+        player.forward();
+        $(this).css("opacity", 1);
+        setTimeout(() => {
+          $(this).css("opacity", 0);
+        }, 300);
+      }
     });
+
+    player.video.onclick = (e) => {
+      player.toggleControls(200);
+      counter = 0;
+    };
   } else {
     //
     //
@@ -304,6 +336,11 @@ $(function () {
     //
 
     $(document).on("mousemove", function () {
+      player.showControls(200);
+      counter = 0;
+    });
+
+    $("#video_container").on("click input mousemove mousedown", function (e) {
       player.showControls(200);
       counter = 0;
     });

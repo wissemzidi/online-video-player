@@ -29,6 +29,7 @@
   </form>
 
   <main id="video_container">
+    <div id="dimmBg"></div>
     <div id="actions_viewer">
       <img width="45px" src="" alt="">
     </div>
@@ -47,40 +48,33 @@
         <span id="time_value">00:00:00</span>
       </div>
       <div id="control_buttons">
-        <div class="controls_grp left_controls">
-          <button class="control_btn" id="resetTime" onclick="player.resetTime()">
-            <i class="fa-solid fa-stop" style="color: #ffffff;"></i>
+        <div class="controls_grp center_controls">
+          <button class="control_btn" id="playPause" onclick="player.playPause()">
+            <i class="fa-solid fa-play" style="color: #ffffff;"></i>
+          </button>
+          <button class="control_btn" id="back" onclick="player.backward()">
+            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
+          </button>
+          <button class="control_btn" id="forward" onclick="player.forward()">
+            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
           </button>
           <div id="volume_controls_container">
             <button class="control_btn" id="toggleMute" onclick="player.toggleMute()">
-              <i class="fa-solid fa-volume-high" style="color: #ffffff;"></i>
-              <!-- <i class="fa-solid fa-volume-high" style="color: #ffffff;"></i> -->
+              <img width="20" src="./icons/volume.svg" alt="Vol">
             </button>
             <input type="range" id="volume" name="volume" min="0" max="100" step="0.01" value="100"
               style="padding: 0; max-width: 60px;">
           </div>
         </div>
-        <div class="controls_grp center_controls">
-          <button class="control_btn" id="back" onclick="player.backward()">
-            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
-            <!-- <i class="fa-solid fa-backward" style="color: #ffffff;"></i> -->
-          </button>
-          <button class="control_btn" id="playPause" onclick="player.playPause()">
-            <i class="fa-solid fa-play" style="color: #ffffff;"></i>
-            <!-- <i class="fa-solid fa-pause" style="color: #ffffff;"></i> -->
-          </button>
-          <button class="control_btn" id="forward" onclick="player.forward()">
-            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
-            <!-- <i class="fa-solid fa-forward" style="color: #ffffff;"></i> -->
-          </button>
-        </div>
         <div class="controls_grp right_controls">
+          <button class="control_btn" id="nextTrack" onclick="showSettingsMenu()">
+            <img width="14" src="./icons/nextTrack.svg" alt="Next">
+          </button>
           <button class="control_btn" id="settings" onclick="showSettingsMenu()">
             <i class="fa-solid fa-gear" style="color: #ffffff;"></i>
           </button>
           <button class="control_btn" id="fullscreen" onclick="player.fullScreen()">
             <i class="fa-solid fa-expand" style="color: #ffffff;"></i>
-            <!-- <i class="fa-solid fa-compress" style="color: #ffffff;"></i> -->
           </button>
         </div>
       </div>

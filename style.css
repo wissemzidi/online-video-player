@@ -85,7 +85,7 @@ form {
   cursor: pointer;
   transition: all ease 0.3s;
 }
-input {
+input[type='text'] {
   width: 100%;
   max-width: min(60vw, 22rem);
   padding: 0.5rem 0.9rem;
@@ -123,6 +123,17 @@ input {
   isolation: isolate;
 
 }
+
+#dimmBg {
+  position: absolute;
+  inset: 0;
+  /* opacity: 0; */
+  display: none;
+  background-color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  cursor: none;
+  z-index: 1;
+}
 #main_vid {
   background-color: rgba(58, 58, 58, 0.2);
   backdrop-filter: blur(2px);
@@ -139,10 +150,9 @@ input {
   left: 50%;
   width: 45px;
   aspect-ratio: 1;
-  padding: 0.5;
-  background-color: rgba(76, 76, 76, 0.2);
-  backdrop-filter: blur(2px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: none;
   border-radius: 999px;
   outline: none;
   font-size: 1.1rem;
@@ -175,10 +185,11 @@ input {
   align-items: center;
   position: absolute;
   inset: 0;
-  background-color: rgba(111, 111, 111, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   opacity: 0;
   z-index: 1;
   /* pointer-events: none; */
+  cursor: none;
   transition: ease-out opacity 0.3s;
 }
 #videoLeftSide {
@@ -209,6 +220,7 @@ input {
 }
 
 #time_controls_container {
+  padding: .5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -281,7 +293,6 @@ input {
 
 #time_value {
   font-size: clamp(0.8rem, 1vw, 1rem);
-  padding-right: 1ch;
 }
 
 #control_buttons {
@@ -290,29 +301,28 @@ input {
 }
 
 .controls_grp {
-  background-color: rgba(76, 76, 76, 0.2);
+  background-color: transparent;
   border-radius: 2rem;
   display: flex;
   gap: 0rem;
-  backdrop-filter: blur(4px) opacity(0.5) grayscale(0.5);
+  backdrop-filter: none;
 }
 
 .control_btn {
-  padding: 0.5rem;
+  padding: 0.2rem;
   background-color: transparent;
-  border: 1px solid transparent;
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: clamp(35px, 7vw, 60px);
+  width: clamp(35px, 7vw, 50px);
   aspect-ratio: 1/1;
   margin: 0.25rem;
   border-radius: 9999rem;
-  transition: all ease 0.3s;
+  transition: background-color ease 0.3s, scale ease .3s;
 }
 .control_btn:hover:not(#toggleMute) {
   background-color: rgba(76, 76, 76, 0.4);
-  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .control_icon {
@@ -328,13 +338,13 @@ input {
   align-items: center;
   gap: 0.1rem;
   margin: 0.25rem;
-  border: 1px solid transparent;
+  padding-right: 0.4rem;
+  border: none;
   border-radius: 99999px;
 }
 #volume_controls_container:hover,
 #volume_controls_container:focus-visible {
   background-color: rgba(76, 76, 76, 0.4);
-  border-color: rgba(255, 255, 255, 0.25);
 }
 
 input#volume {
@@ -383,16 +393,19 @@ input#volume::-moz-range-thumb {
 }
 
 @media (min-width: 700px) {
+  
   .control_btn i {
     scale: 1.25;
+  }
+  .control_btn img {
+    scale: 1.25;
+  }
+  #volume_controls_container {
+    padding-right: 0.7rem;
   }
   input#volume {
     --thumb-size: 15px;
     --slider-width: 80px;
-  }
-
-  .control_icon {
-    scale: 1.25;
   }
 
   #center_btn {
@@ -426,17 +439,13 @@ input#volume::-moz-range-thumb {
     align-items: center;
     width: 25px;
     aspect-ratio: 1/1;
-    margin: 0.2rem;
+    margin: 0.1rem;
     transition: all ease 0.3s;
   }
-  input#volume {
+  /* input#volume {
     --thumb-size: 7px;
     --slider-width: 30px;
-  }
-
-  #center_btn {
-    scale: 0.7;
-  }
+  } */
 
   #time_range {
     --thumb-size: 12px;
@@ -451,12 +460,21 @@ input#volume::-moz-range-thumb {
 
 /* For Mobile */
 @media (hover: none) {
-  input#volume {
-    opacity: 1;
-    width: 30px;
+  *:hover {
+    background-color: initial;
+    border-color: initial;
+    color: initial;
+    cursor: initial;
   }
   #actions_viewer {
     display: none !important;
+  }
+  #volume_controls_container:hover {
+    background-color: transparent;
+  }
+  .control_btn:hover {
+    background-color: initial;
+    border: none;
   }
 }
 
@@ -465,5 +483,8 @@ input#volume::-moz-range-thumb {
 @media (hover: hover) {
   #videoLeftSide, #videoRightSide, #center_btn {
     display: none !important;
+  }
+  .control_btn:hover:not(#toggleMute) {
+    scale: 1.25;
   }
 }
