@@ -42,6 +42,14 @@ button {
   }
 }
 
+#errorContainer {
+  color: red;
+  text-align: center;
+  position: absolute;
+  z-index: 1;
+  font-size: clamp(1.5rem, 3vw, 4rem);
+}
+
 #toggle_video_link_form_btn {
   position: absolute;
   top: 0;

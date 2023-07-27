@@ -17,6 +17,11 @@ class Player {
 
     $("#main_vid").attr("src", videoUrl);
 
+    document.getElementById("main_vid").onerror = (e) => {
+      $(".spinner").hide();
+      $("#errorContainer").text(`${e.type.toUpperCase()}, resource not found.`);
+    };
+
     let time_interval = setInterval(function () {
       player.updateTime();
     }, 1000);
@@ -99,7 +104,8 @@ class Player {
   }
 
   fullScreen() {
-    let videoContainer = document.getElementById("video_container");
+    const videoContainer = document.getElementById("video_container");
+    let wakeLock = null;
     if (this.isFullscreen()) {
       // exit fullscreen
       if (document.exitFullscreen) {
@@ -110,9 +116,21 @@ class Player {
         document.webkitExitFullscreen();
       }
       screen.orientation.unlock();
+      if ("wakeLock" in navigator && wakeLock != null) {
+        wakeLock.release("screen");
+      }
     } else {
-      videoContainer.requestFullscreen();
+      if (videoContainer.mozRequestFullScreen) {
+        videoContainer.mozRequestFullScreen();
+      } else if (videoContainer.webkitRequestFullscreen) {
+        videoContainer.webkitRequestFullscreen();
+      } else {
+        videoContainer.requestFullscreen();
+      }
       screen.orientation.lock("landscape");
+      if ("wakeLock" in navigator) {
+        wakeLock = navigator.wakeLock.request("screen");
+      }
     }
   }
 
@@ -203,30 +221,22 @@ $(function () {
   const urlParams = new URLSearchParams(window.location.search);
   const movieUrl = decodeURI(urlParams.get("url"));
 
-  console.log(movieUrl);
-
   if (
     movieUrl != "null" &&
     movieUrl != null &&
     movieUrl.trim() != "" &&
     movieUrl != undefined
   ) {
-    console.log("img here");
-    try {
-      player = new Player(
-        movieUrl,
-        document.getElementById("main_vid"),
-        document.getElementById("time_value"),
-        document.getElementById("time_range")
-      );
-      player.fullScreen();
-      player.playPause();
-      $("#video_link_form").hide();
-      $("#toggle_video_link_form_btn").hide();
-    } catch (error) {
-      alert("Error in the provided link");
-      throw new Error("Error: " + error);
-    }
+    player = new Player(
+      movieUrl,
+      document.getElementById("main_vid"),
+      document.getElementById("time_value"),
+      document.getElementById("time_range")
+    );
+    player.fullScreen();
+    player.playPause();
+    $("#video_link_form").hide();
+    $("#toggle_video_link_form_btn").hide();
   } else {
     window.location.href = "./entry.html";
   }
