@@ -11,8 +11,6 @@
 }
 
 body {
-  min-height: 100vh;
-  min-height: 100svh;
   background-color: #000;
   position: relative;
   isolation: isolate;
@@ -20,16 +18,6 @@ body {
   flex-direction: column;
   justify-content: center;
   font-family: Arial, Helvetica, sans-serif;
-}
-body::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url("https://wallpaperaccess.com/full/1773005.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  z-index: -1;
-  filter: blur(1px) opacity(0.9) grayscale(0.75);
 }
 
 button {
@@ -50,78 +38,6 @@ button {
   font-size: clamp(1.5rem, 3vw, 4rem);
 }
 
-#toggle_video_link_form_btn {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 0.3rem;
-  padding-right: 0.6rem;
-  padding-bottom: 0.6rem;
-  border-end-end-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(128, 0, 128, 0.5);
-  border-right: none;
-  outline: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  z-index: 999;
-  transition: all ease 0.3s;
-}
-#toggle_video_link_form_btn:where(:hover, :focus-visible) {
-  scale: 1.25;
-  top: 3px;
-  left: 3px;
-}
-
-form {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 0.5rem;
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-}
-#hide_form_btn {
-  margin-inline: 0.5rem;
-  padding: 0.4rem;
-  border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-right: none;
-  outline: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all ease 0.3s;
-}
-input[type='text'] {
-  width: 100%;
-  max-width: min(60vw, 22rem);
-  padding: 0.5rem 0.9rem;
-  border-start-start-radius: 2rem;
-  border-end-start-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(70, 70, 70, 0.25);
-  border-right: none;
-  outline: none;
-  font-size: 1.1rem;
-  backdrop-filter: blur(2px);
-}
-#submit_btn {
-  padding: 0.5rem 0.9rem;
-  border-start-end-radius: 2rem;
-  border-end-end-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  outline: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  background-color: rgba(128, 0, 128, 0.5);
-  transition: all ease 0.3s;
-}
-#submit_btn:where(:hover, :focus-visible),
-#hide_form_btn:where(:hover, :focus-visible) {
-  background-color: red;
-}
 
 #video_container {
   position: relative;
@@ -129,8 +45,18 @@ input[type='text'] {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   isolation: isolate;
 
+  height: 100vh;
+  height: 100svh;
+  max-height: 100vh;
+  max-height: 100svh;
+  
+  width: 100vw;
+  width: 100svw;
+  max-width: 100vw;
+  max-width: 100svw;
 }
 
 #dimmBg {
@@ -144,6 +70,7 @@ input[type='text'] {
   z-index: 1;
 }
 #main_vid {
+  position: absolute;
   background-color: rgba(58, 58, 58, 0.2);
   backdrop-filter: blur(2px);
   max-height: 100vh;
@@ -165,7 +92,7 @@ input[type='text'] {
   border-radius: 999px;
   outline: none;
   font-size: 1.1rem;
-  transform: translate(-50%, -50%);
+  translate: -50% -50%;
   cursor: pointer;
   z-index: 1;
 }
@@ -354,6 +281,25 @@ input[type='text'] {
   filter: invert(1);
 }
 
+
+#videoSpeed, #aspectRatio {
+  position: relative;
+}
+#videoSpeed span, #aspectRatio span {
+  font-size: .75rem;
+  border-radius: 99rem;
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  backdrop-filter: blur(1px) grayscale(0.5);
+  font-weight: bold;
+}
+#aspectRatio span {
+  left: 0;
+  right: 0;
+  top: 15%;
+}
+
 #toggleMute {
   margin: 0;
 }
@@ -415,6 +361,12 @@ input#volume::-moz-range-thumb {
   height: var(--thumb-size);
   background: var(--thumb-color);
   border-radius: 999999px;
+}
+
+
+.error {
+  color: red;
+  text-align: center;
 }
 
 @media (min-width: 700px) {
@@ -481,6 +433,11 @@ input#volume::-moz-range-thumb {
   #time_range:hover {
     height: 6px;
   }
+
+  #controls {
+    padding: 0.2rem;
+    gap: 0rem;
+  }
 }
 
 /* For Mobile */
@@ -510,3 +467,4 @@ input#volume::-moz-range-thumb {
     scale: 1.25;
   }
 }
+
