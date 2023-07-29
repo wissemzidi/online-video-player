@@ -18,22 +18,11 @@ class Player {
 
     this.source.src = videoUrl;
     this.video.load();
-    this.video.play();
 
     handlePlayerError(this.video);
   }
 
   updateTime() {
-    this.video.addEventListener("progress", (e) => {
-      let bufferedDuration = Math.round(
-        (this.video.buffered.end(this.video.buffered.length - 1) * 100) /
-          this.video.duration
-      );
-      $("#bufferingIndicator").css(
-        "--buffered-percentage",
-        bufferedDuration + "%"
-      );
-    });
     let { hours, minutes, seconds } = getCurrentTime(this.video.currentTime);
     $(this.timeCount).text(hours + ":" + minutes + ":" + seconds);
     $(this.timeRange).css(
@@ -74,6 +63,24 @@ class Player {
       this.animateActionsBtn("play");
       this.video.pause();
     }
+  }
+  play() {
+    const playPauseIcon = $("#playPause img");
+    const centerBtn = $("#center_btn img");
+    // playing....
+    playPauseIcon.attr("src", "./icons/pause.svg");
+    centerBtn.attr("src", "./icons/pause.svg");
+    this.animateActionsBtn("pause");
+    this.video.play();
+  }
+  pause() {
+    const playPauseIcon = $("#playPause img");
+    const centerBtn = $("#center_btn img");
+    // pausing...
+    playPauseIcon.attr("src", "./icons/play.svg");
+    centerBtn.attr("src", "./icons/play.svg");
+    this.animateActionsBtn("play");
+    this.video.pause();
   }
 
   resetTime() {
@@ -200,8 +207,8 @@ class Player {
         $("#aspectRatio span").text("Auto");
         $(this.video).css("max-height", "100vh");
         $(this.video).css("max-width", "100vw");
-        $(this.video).width("auto");
-        $(this.video).height("auto");
+        $(this.video).width("100vw");
+        $(this.video).height("100vh");
         break;
       case 1:
         $(this.video).css("aspect-ratio", "16/9");
@@ -212,6 +219,7 @@ class Player {
         $(this.video).css("max-height", "none");
         $(this.video).css("max-width", "100vw");
         $(this.video).width(screen.width);
+        $(this.video).height("auto");
         $("#aspectRatio span").text("WFill");
         break;
       case 3:
@@ -219,6 +227,7 @@ class Player {
         $(this.video).css("max-height", "100vh");
         $(this.video).css("max-width", "none");
         $(this.video).height(screen.height);
+        $(this.video).width("auto");
         $("#aspectRatio span").text("HFill");
         break;
       // case 3:
@@ -267,6 +276,7 @@ let player = new Player(
 $(function () {
   const urlParams = new URLSearchParams(window.location.search);
   const movieUrl = decodeURI(urlParams.get("url"));
+  let time_interval;
 
   if (
     movieUrl != "null" &&
@@ -280,7 +290,7 @@ $(function () {
       document.getElementById("time_value"),
       document.getElementById("time_range")
     );
-    let time_interval = setInterval(function () {
+    time_interval = setInterval(function () {
       player.updateTime();
     }, 1000);
     $(document).on("mousemouve", function (e) {
@@ -288,6 +298,8 @@ $(function () {
     });
   } else {
     window.location.href = "./entry.html";
+    return;
+    $("#errorContainer").text("No Link Provided");
   }
 
   listenToKeyEvents();
@@ -330,17 +342,52 @@ $(function () {
     $(player.video).on("click", player.showControls(200));
 
     let startTouchPos = null;
-    $("#video_container").on("touchmove", function (e) {
-      if (startTouchPos == null) {
+    let timeCurrentPercentage = null;
+    let changePercentage = 0;
+    $(player.video).on("touchmove", function (e) {
+      if (startTouchPos == null || timeCurrentPercentage == null) {
+        player.pause();
+        clearInterval(time_interval);
         startTouchPos = e.touches[0].clientX;
+        timeCurrentPercentage = Number(
+          $("#time_range").css("--current-percentage").replace("%", "")
+        );
       }
-
-      player.video.currentTime += e.touches[0].clientX - startTouchPos;
+      changePercentage =
+        ((e.changedTouches[0].clientX - startTouchPos) * 100) / screen.width;
+      let newPercentage = timeCurrentPercentage + changePercentage;
+      newPercentage >= 100 ? (newPercentage = 100) : "";
+      newPercentage <= 0 ? (newPercentage = 0) : "";
+      $("#time_range").css(
+        "--current-percentage",
+        newPercentage.toString() + "%"
+      );
+      let { hours, minutes, seconds } = getCurrentTime(
+        (player.video.duration * newPercentage) / 100
+      );
+      $(player.timeCount).text(hours + ":" + minutes + ":" + seconds);
       player.showControls(100);
       counter = 0;
     });
-    $("#video_container").on("touchend", function (e) {
+    $(player.video).on("touchend", function (e) {
+      if (changePercentage == null || timeCurrentPercentage == null) {
+        return;
+      }
+
+      if (changePercentage > 0) {
+        player.video.currentTime +=
+          (changePercentage * player.video.duration) / 100;
+      } else {
+        player.video.currentTime -=
+          (Math.abs(changePercentage) * player.video.duration) / 100;
+      }
       startTouchPos = null;
+      timeCurrentPercentage = null;
+      player.updateTime();
+      time_interval = setInterval(function () {
+        player.updateTime();
+      }, 1000);
+      player.play();
     });
 
     let dblclickLeft = null;
@@ -383,6 +430,7 @@ $(function () {
       if (
         e.target.tagName.toUpperCase() == "IMG" ||
         e.target.tagName.toUpperCase() == "VIDEO" ||
+        e.target.tagName.toUpperCase() == "BUTTON" ||
         e.target.tagName.toUpperCase() == "INPUT"
       ) {
         player.showControls(200);
@@ -461,13 +509,28 @@ function listenToKeyEvents() {
 function handlePlayerError(video) {
   video.onerror = (e) => {
     $(".spinner").hide();
+    player.hideControls(100);
     $("#errorContainer").text(`${e.type.toUpperCase()}, resource not found.`);
   };
 
   video.addEventListener("waiting", (e) => {
     $(".spinner").show();
   });
+
   video.addEventListener("canplay", (e) => {
     $(".spinner").hide();
+
+    $("#bufferingIndicator").css(
+      "--buffered-percentage",
+      ((video.buffered.end(0) / video.duration) * 100).toString() + "%"
+    );
+    video.addEventListener("progress", () => {
+      let bufferedPercentage =
+        (video.buffered.end(video.buffered.length - 1) / video.duration) * 100;
+      $("#bufferingIndicator").css(
+        "--buffered-percentage",
+        bufferedPercentage.toString() + "%"
+      );
+    });
   });
 }
