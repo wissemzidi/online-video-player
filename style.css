@@ -130,7 +130,7 @@ button {
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
-  /* opacity: 0; */
+  opacity: 0;
   z-index: 1;
   /* pointer-events: none; */
   cursor: none;
@@ -300,7 +300,6 @@ button {
   position: absolute;
   top: 15%;
   left: 15%;
-  backdrop-filter: blur(1px) grayscale(0.5);
   font-weight: bold;
 }
 #aspectRatio span {

@@ -344,93 +344,81 @@ $(function () {
     let startTouchPos = null;
     let timeCurrentPercentage = null;
     let changePercentage = 0;
-    $(player.video).on("touchmove", function (e) {
-      if (startTouchPos == null || timeCurrentPercentage == null) {
-        player.pause();
-        clearInterval(time_interval);
-        startTouchPos = e.touches[0].clientX;
-        timeCurrentPercentage = Number(
-          $("#time_range").css("--current-percentage").replace("%", "")
+    $(`#${player.video.id}, #videoLeftSide, #videoRightSide`).on(
+      "touchmove",
+      function (e) {
+        if (startTouchPos == null || timeCurrentPercentage == null) {
+          player.pause();
+          clearInterval(time_interval);
+          startTouchPos = e.touches[0].clientX;
+          timeCurrentPercentage = Number(
+            $("#time_range").css("--current-percentage").replace("%", "")
+          );
+        }
+        changePercentage =
+          ((e.changedTouches[0].clientX - startTouchPos) * 100) / screen.width;
+        let newPercentage = timeCurrentPercentage + changePercentage;
+        newPercentage >= 100 ? (newPercentage = 100) : "";
+        newPercentage <= 0 ? (newPercentage = 0) : "";
+        $("#time_range").css(
+          "--current-percentage",
+          newPercentage.toString() + "%"
         );
+        let { hours, minutes, seconds } = getCurrentTime(
+          (player.video.duration * newPercentage) / 100
+        );
+        $(player.timeCount).text(hours + ":" + minutes + ":" + seconds);
+        player.showControls(100);
+        counter = 0;
       }
-      changePercentage =
-        ((e.changedTouches[0].clientX - startTouchPos) * 100) / screen.width;
-      let newPercentage = timeCurrentPercentage + changePercentage;
-      newPercentage >= 100 ? (newPercentage = 100) : "";
-      newPercentage <= 0 ? (newPercentage = 0) : "";
-      $("#time_range").css(
-        "--current-percentage",
-        newPercentage.toString() + "%"
-      );
-      let { hours, minutes, seconds } = getCurrentTime(
-        (player.video.duration * newPercentage) / 100
-      );
-      $(player.timeCount).text(hours + ":" + minutes + ":" + seconds);
-      player.showControls(100);
-      counter = 0;
-    });
-    $(player.video).on("touchend", function (e) {
-      if (changePercentage == null || timeCurrentPercentage == null) {
-        return;
-      }
+    );
+    $(`#${player.video.id}, #videoLeftSide, #videoRightSide`).on(
+      "touchend",
+      function (e) {
+        if (changePercentage == null || timeCurrentPercentage == null) {
+          return;
+        }
 
-      if (changePercentage > 0) {
-        player.video.currentTime +=
-          (changePercentage * player.video.duration) / 100;
-      } else {
-        player.video.currentTime -=
-          (Math.abs(changePercentage) * player.video.duration) / 100;
-      }
-      startTouchPos = null;
-      timeCurrentPercentage = null;
-      player.updateTime();
-      time_interval = setInterval(function () {
+        if (changePercentage > 0) {
+          player.video.currentTime +=
+            (changePercentage * player.video.duration) / 100;
+        } else {
+          player.video.currentTime -=
+            (Math.abs(changePercentage) * player.video.duration) / 100;
+        }
+        startTouchPos = null;
+        timeCurrentPercentage = null;
         player.updateTime();
-      }, 1000);
-      player.play();
+        time_interval = setInterval(function () {
+          player.updateTime();
+        }, 1000);
+        player.play();
+      }
+    );
+
+    $("#videoLeftSide").on("dblclick", function () {
+      player.backward();
+      $(this).css("opacity", 1);
+      setTimeout(() => {
+        $(this).css("opacity", 0);
+      }, 300);
     });
 
-    let dblclickLeft = null;
-    $("#videoLeftSide").on("click", function () {
-      if (dblclickLeft == null) {
-        dblclickLeft = true;
-        dblclickTimer = setTimeout(() => {
-          dblclickLeft = null;
-        }, 200);
-      } else {
-        dblclickLeft = null;
-        clearTimeout(dblclickTimer);
-        player.backward();
-        $(this).css("opacity", 1);
-        setTimeout(() => {
-          $(this).css("opacity", 0);
-        }, 300);
-      }
-    });
-
-    let dblclickRight = null;
-    $("#videoRightSide").on("click", function () {
-      if (dblclickRight == null) {
-        dblclickRight = true;
-        dblclickTimer = setTimeout(() => {
-          dblclickRight = null;
-        }, 200);
-      } else {
-        dblclickRight = null;
-        clearTimeout(dblclickTimer);
-        player.forward();
-        $(this).css("opacity", 1);
-        setTimeout(() => {
-          $(this).css("opacity", 0);
-        }, 300);
-      }
+    $("#videoRightSide").on("dblclick", function () {
+      player.forward();
+      $(this).css("opacity", 1);
+      setTimeout(() => {
+        $(this).css("opacity", 0);
+      }, 300);
     });
 
     $("#video_container").on("click", function (e) {
+      console.log(e.target.tagName);
       if (
         e.target.tagName.toUpperCase() == "IMG" ||
         e.target.tagName.toUpperCase() == "VIDEO" ||
         e.target.tagName.toUpperCase() == "BUTTON" ||
+        e.target.tagName.toUpperCase() == "SPAN" ||
         e.target.tagName.toUpperCase() == "INPUT"
       ) {
         player.showControls(200);
