@@ -322,10 +322,6 @@ button {
   border: none;
   border-radius: 99999px;
 }
-#volume_controls_container:hover,
-#volume_controls_container:focus-visible {
-  /* background-color: rgba(76, 76, 76, 0.4); */
-}
 
 input#volume {
   --slider-width: 50px;
@@ -411,6 +407,7 @@ input#volume::-moz-range-thumb {
   input#volume {
     --thumb-size: 15px;
     --slider-width: 80px;
+    --track-height: 8px;
   }
 
   #center_btn {
