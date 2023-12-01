@@ -83,7 +83,7 @@ class Player {
     this.video.pause();
   }
 
-  resetTime() {
+  replay() {
     this.video.currentTime = 0;
     this.updateTime();
   }

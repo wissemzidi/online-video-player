@@ -44,33 +44,36 @@
       </div>
       <div id="control_buttons">
         <div class="controls_grp center_controls">
-          <button class="control_btn" id="playPause" onclick="player.playPause()">
+          <button class="control_btn" id="playPause" title="Play Pause" onclick="player.playPause()">
             <img width="20" src="./icons/pause.svg" alt="Play">
           </button>
-          <button class="control_btn" id="back" onclick="player.backward()">
+          <button class="control_btn" id="back" title="Backward" onclick="player.backward()">
             <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
           </button>
-          <button class="control_btn" id="forward" onclick="player.forward()">
+          <button class="control_btn" id="forward" title="Forward" onclick="player.forward()">
             <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
           </button>
           <div id="volume_controls_container">
-            <button class="control_btn" id="toggleMute" onclick="player.toggleMute()">
+            <button class="control_btn" id="toggleMute" title="Toggle Mute" onclick="player.toggleMute()">
               <img width="20" src="./icons/volume.svg" alt="Vol">
             </button>
-            <input type="range" id="volume" name="volume" min="0" max="100" step="0.01" value="100"
+            <input type="range" id="volume" name="volume" title="volume" min="0" max="100" step="0.01" value="100"
               style="padding: 0; max-width: 60px;">
           </div>
         </div>
         <div class="controls_grp right_controls">
-          <button class="control_btn" id="aspectRatio" onclick="player.changeAspectRatio()">
+          <button class="control_btn" id="aspectRatio" title="Replay" onclick="player.replay()">
+            <img width="22" style="opacity: .75;" src="./icons/replay.svg" alt="Replay">
+          </button>
+          <button class="control_btn" id="aspectRatio" title="Change aspect ratio" onclick="player.changeAspectRatio()">
             <span id="currentAspectRatio">Auto</span>
             <img width="20" style="opacity: .75;" src="./icons/aspectRatio.svg" alt="16:9">
           </button>
-          <button class="control_btn" id="videoSpeed" onclick="player.changeSpeed()">
+          <button class="control_btn" id="videoSpeed" title="Change speed" onclick="player.changeSpeed()">
             <span id="currentSpeed">1</span>
             <img width="20" src="./icons/speed.svg" alt="Speed">
           </button>
-          <button class="control_btn" id="fullscreen" onclick="player.fullScreen()">
+          <button class="control_btn" title="Fullscreen" id="fullscreen" onclick="player.fullScreen()">
             <i class="fa-solid fa-expand" style="color: #ffffff;"></i>
           </button>
         </div>
@@ -79,7 +82,7 @@
     <video id="main_vid" aspectIndex="0" autoplay="true" speed="1">
       <source src="">
       <h2 class="error">
-        Your browser doesn't support HTML video.
+        Sorry, Your browser doesn't support HTML videos.
       </h2>
     </video>
   </main>
