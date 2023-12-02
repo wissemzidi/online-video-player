@@ -1,3 +1,5 @@
+"use strict";
+
 function getCurrentTime(currentTime) {
   let seconds = Math.floor(currentTime % 60).toString();
   let minutes = Math.floor((currentTime / 60) % 60).toString();
@@ -302,13 +304,11 @@ $(function () {
     time_interval = setInterval(function () {
       player.updateTime();
     }, 1000);
-    $(document).on("mousemouve", function (e) {
-      player.fullScreen();
-    });
+    player.fullScreen();
   } else {
-    window.location.href = "./entry.html";
+    $("#errorContainer").text("Sorry, No Link Provided");
+    $(".spinner").hide();
     return;
-    $("#errorContainer").text("No Link Provided");
   }
 
   listenToKeyEvents();
@@ -514,8 +514,6 @@ function handlePlayerError(video) {
     $(".spinner").show();
   });
 
-  // document.addEventListener("playing", (e) => {});
-
   video.addEventListener("canplay", (e) => {
     $(".spinner").hide();
     var promise = video.play();
@@ -568,4 +566,22 @@ function slideIn(ele, distance) {
     top: distance,
     opacity: 1,
   });
+}
+
+function loadLocalVideo() {
+  console.log("changing vid");
+  var file = document.getElementById("video_file").files[0];
+  var fileURL = window.URL.createObjectURL(file);
+  player = new Player(
+    fileURL,
+    document.getElementById("main_vid"),
+    document.getElementById("time_value"),
+    document.getElementById("time_range")
+  );
+  time_interval = setInterval(function () {
+    player.updateTime();
+  }, 1000);
+  player.fullScreen();
+
+  return;
 }

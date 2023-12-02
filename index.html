@@ -43,6 +43,10 @@
         <button class="control_btn" id="return" title="Return">
           <img width="22" style="opacity: .8;" src="./icons/back.svg" alt="Return">
         </button>
+        <button class="control_btn" id="addVid" title="Add local video" onclick="$('#video_file').click()">
+          <img width="22" style="opacity: .8;" src="./icons/add.svg" alt="Add">
+        </button>
+        <input type="file" id="video_file" onchange="loadLocalVideo()" hidden>
         <div id="video_title_container">
           <h3 id="video_title"></h3>
         </div>
@@ -94,7 +98,8 @@
         </div>
       </div>
     </div>
-    <video id="main_vid" aspectIndex="0" muted autoplay="true" speed="1">
+    <!-- ! delete the muted -->
+    <video id="main_vid" muted aspectIndex="0" autoplay="true" speed="1">
       <source src="">
       <h2 class="error">
         Sorry, Your browser doesn't support HTML videos.
