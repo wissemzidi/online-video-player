@@ -152,6 +152,28 @@ button {
   opacity: 0.5;
 }
 
+
+#popup {
+  display: none;
+  position: absolute;
+  opacity: 0;
+  top: -1rem;
+  padding: .5rem;
+  border-radius: 1rem;
+  left: 50%;
+  translate: -50% 0;
+  background-color: rgba(255, 255, 255, 0.2);
+
+  transition: background-color ease-out .3s;
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+#popup:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+
 #controls {
   position: absolute;
   bottom: 0;
@@ -282,30 +304,54 @@ button {
   border-radius: 9999rem;
   transition: background-color ease 0.3s, scale ease .3s;
 }
-/* .control_btn:hover:not(#toggleMute) {
+.control_btn:hover:not(#toggleMute) {
   background-color: rgba(76, 76, 76, 0.4);
-} */
+}
 
 .control_icon {
   filter: invert(1);
+}
+
+#video_header {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: .5rem;
+  z-index: 1;
+}
+#video_header #upper_controls_container {
+  display: flex;
+  align-items: center;
+}
+#video_header > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#video_title_container {
+  display: flex;
+  align-items: center;
+  padding-inline: 1rem;
+}
+#video_title_container > * {
+  font-weight: 400;
 }
 
 
 #videoSpeed, #aspectRatio {
   position: relative;
 }
-#videoSpeed span, #aspectRatio span {
+#videoSpeed span {
   font-size: .75rem;
   border-radius: 99rem;
   position: absolute;
   top: 15%;
   left: 15%;
   font-weight: bold;
-}
-#aspectRatio span {
-  left: 0;
-  right: 0;
-  top: 15%;
 }
 
 #toggleMute {
@@ -321,6 +367,9 @@ button {
   border: none;
   border-radius: 99999px;
 }
+#volume_controls_container:hover {
+  background-color: rgba(76, 76, 76, 0.4);
+}
 
 input#volume {
   --slider-width: 50px;
@@ -331,6 +380,7 @@ input#volume {
   --volume: 100%;
 
   -webkit-appearance: none;
+  -moz-appearance: none;
   background-color: transparent;
   margin-right: 0.4rem;
   width: 0;
@@ -360,6 +410,8 @@ input#volume::-webkit-slider-runnable-track{
 }
 input#volume::-webkit-slider-thumb {
   -webkit-appearance: none;
+  -moz-appearance: none;
+
   appearance: none;
   margin-top: calc(-1 * var(--track-height) / 2);
   width: var(--thumb-size);
@@ -376,6 +428,8 @@ input#volume::-moz-range-track{
 }
 input#volume::-moz-range-thumb {
   -webkit-appearance: none;
+  -moz-appearance: none;
+
   appearance: none;
   width: var(--thumb-size);
   height: var(--thumb-size);

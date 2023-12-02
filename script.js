@@ -9,12 +9,22 @@ function getCurrentTime(currentTime) {
 }
 
 class Player {
-  constructor(videoUrl, video, timeCount, timeRange) {
+  constructor(videoUrl, video, timeCount, timeRange, title, time) {
     this.videoUrl = videoUrl;
     this.video = video;
     this.source = document.querySelector("source");
     this.timeCount = timeCount;
     this.timeRange = timeRange;
+    if (title != undefined && title.toString() != "null") {
+      $("#video_title").text(`${title}`);
+    }
+    if (
+      time != undefined &&
+      time.toString() != "null" &&
+      !isNaN(time.toString())
+    ) {
+      player.changeTime(time);
+    }
 
     this.source.src = videoUrl;
     this.video.load();
@@ -205,6 +215,7 @@ class Player {
       case 0:
         $(this.video).css("aspect-ratio", "auto");
         $("#aspectRatio span").text("Auto");
+        popupTimedMsg("Aspect Ratio : Auto", 3000, 300);
         $(this.video).css("max-height", "100vh");
         $(this.video).css("max-width", "100vw");
         $(this.video).width("100vw");
@@ -212,6 +223,7 @@ class Player {
         break;
       case 1:
         $(this.video).css("aspect-ratio", "16/9");
+        popupTimedMsg("Aspect Ratio : 16 / 9", 3000, 300);
         $("#aspectRatio span").text("16:9");
         break;
       case 2:
@@ -221,6 +233,7 @@ class Player {
         $(this.video).width(screen.width);
         $(this.video).height("auto");
         $("#aspectRatio span").text("WFill");
+        popupTimedMsg("Aspect Ratio : Width fill", 3000, 300);
         break;
       case 3:
         $(this.video).css("aspect-ratio", "auto");
@@ -229,17 +242,8 @@ class Player {
         $(this.video).height(screen.height);
         $(this.video).width("auto");
         $("#aspectRatio span").text("HFill");
+        popupTimedMsg("Aspect Ratio : Height fill", 3000, 300);
         break;
-      // case 3:
-      //   $(this.video).css("max-height", "100vh");
-      //   $(this.video).width("auto");
-      //   $(this.video).css("aspect-ratio", "4/3");
-      //   $("#aspectRatio span").text("4:3");
-      //   break;
-      // case 4:
-      //   $(this.video).css("aspect-ratio", "1/1");
-      //   $("#aspectRatio span").text("1:1");
-      //   break;
     }
   }
 
@@ -249,19 +253,22 @@ class Player {
   }
 
   hideControls(animationDuration) {
-    $("#controls").fadeOut(animationDuration);
-    $("#center_btn").fadeOut(animationDuration);
-    $("#dimmBg").fadeOut(animationDuration);
+    $("#controls").stop(true, false).fadeOut(animationDuration);
+    $("#center_btn").stop(true, false).fadeOut(animationDuration);
+    $("#dimmBg").stop(true, false).fadeOut(animationDuration);
+    $("#video_header").stop(true, false).fadeOut(animationDuration);
   }
   showControls(animationDuration) {
-    $("#controls").fadeIn(animationDuration);
-    $("#center_btn").fadeIn(animationDuration);
-    $("#dimmBg").fadeIn(animationDuration);
+    $("#controls").stop(true, false).fadeIn(animationDuration);
+    $("#center_btn").stop(true, false).fadeIn(animationDuration);
+    $("#dimmBg").stop(true, false).fadeIn(animationDuration);
+    $("#video_header").stop(true, false).fadeIn(animationDuration);
   }
   toggleControls(animationDuration) {
-    $("#controls").fadeToggle(animationDuration);
-    $("#center_btn").fadeToggle(animationDuration);
-    $("#dimmBg").fadeToggle(animationDuration);
+    $("#controls").stop(true, false).fadeToggle(animationDuration);
+    $("#center_btn").stop(true, false).fadeToggle(animationDuration);
+    $("#dimmBg").stop(true, false).fadeToggle(animationDuration);
+    $("#video_header").stop(true, false).fadeToggle(animationDuration);
   }
 }
 
@@ -288,7 +295,9 @@ $(function () {
       movieUrl,
       document.getElementById("main_vid"),
       document.getElementById("time_value"),
-      document.getElementById("time_range")
+      document.getElementById("time_range"),
+      decodeURI(urlParams.get("tl")),
+      decodeURI(urlParams.get("t"))
     );
     time_interval = setInterval(function () {
       player.updateTime();
@@ -505,8 +514,21 @@ function handlePlayerError(video) {
     $(".spinner").show();
   });
 
+  // document.addEventListener("playing", (e) => {});
+
   video.addEventListener("canplay", (e) => {
     $(".spinner").hide();
+    var promise = video.play();
+
+    if (promise !== undefined) {
+      promise
+        .then((_) => {
+          $(`#playPause img, #center_btn img`).attr("src", "./icons/pause.svg");
+        })
+        .catch((error) => {
+          popupTimedMsg("Auto play is disabled", 3000, 400);
+        });
+    }
 
     $("#bufferingIndicator").css(
       "--buffered-percentage",
@@ -520,5 +542,30 @@ function handlePlayerError(video) {
         bufferedPercentage.toString() + "%"
       );
     });
+  });
+}
+
+function popupTimedMsg(msg, duration, animationDuration) {
+  $("#popup").html(msg);
+  $("#popup").css("display", "block");
+  $("#popup").stop(true, false).animate({
+    top: 16,
+    opacity: 1,
+  });
+  setTimeout(() => {
+    $("#popup")
+      .stop(true, false)
+      .fadeOut(animationDuration, () => {
+        $("#popup").css("top", "-1rem");
+        $("#popup").css("opacity", "0");
+      });
+  }, duration);
+}
+
+function slideIn(ele, distance) {
+  $(ele).css("display", "block");
+  $(ele).stop(true, false).animate({
+    top: distance,
+    opacity: 1,
   });
 }
