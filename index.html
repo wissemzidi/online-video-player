@@ -46,7 +46,7 @@
         <button class="control_btn" id="addVid" title="Add local video" onclick="$('#video_file').click()">
           <img width="22" style="opacity: .8;" src="./icons/add.svg" alt="Add">
         </button>
-        <input type="file" id="video_file" onchange="loadLocalVideo()" hidden>
+        <input type="file" id="video_file" onchange="loadLocalVideo()" accept="video/*" hidden>
         <div id="video_title_container">
           <h3 id="video_title"></h3>
         </div>
