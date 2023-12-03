@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/x-icon" href="./play.png">
+  <title>OVP - online video player</title>
+
+
+  <link rel="stylesheet" href="spinner.css">
+  <link rel="stylesheet" href="style.css">
+  <script async src="https://kit.fontawesome.com/0c7cf3d8f9.js" crossorigin="anonymous"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+  <main id="video_container">
+    <h1 id="errorContainer"></h1>
+    <div class="spinner"></div>
+    <div id="dimmBg"></div>
+    <div id="actions_viewer">
+      <img width="45px" src="" alt="">
+    </div>
+    <button id="center_btn" onclick="player.playPause()">
+      <img width="20" src="icons/play.svg" alt="">
+    </button>
+    <div id="videoLeftSide">
+      <img width="50" src="./icons/backward.svg" alt="">
+    </div>
+    <div id="videoRightSide">
+      <img width="50" src="./icons/forward.svg" alt="">
+    </div>
+    <div id="popup">
+    </div>
+    
+    <!-- upper controls -->
+    <div id="video_header">
+      <div id="upper_controls_container">
+        <button class="control_btn" id="return" title="Return">
+          <img width="22" style="opacity: .8;" src="./icons/back.svg" alt="Return">
+        </button>
+        <button class="control_btn" id="addVid" title="Add local video" onclick="$('#video_file').click()">
+          <img width="22" style="opacity: .8;" src="./icons/add.svg" alt="Add">
+        </button>
+        <input type="file" id="video_file" onchange="loadLocalVideo()" accept="video/*" hidden>
+        <div id="video_title_container">
+          <h3 id="video_title"></h3>
+        </div>
+      </div>
+      <div>
+        <button class="control_btn" id="replay" title="Replay" onclick="player.replay()">
+          <img width="24" style="opacity: .9;" src="./icons/replay.svg" alt="Replay">
+        </button>
+        <button class="control_btn" id="aspectRatio" title="Change aspect ratio" onclick="player.changeAspectRatio()">
+          <img width="25" style="opacity: .9;" src="./icons/aspectRatio.svg" alt="16:9">
+        </button>
+      </div>
+    </div>
+    <div id="controls">
+      <div id="time_controls_container">
+        <div class="time_range_input_container">
+          <input id="time_range" type="range" value="0" min="0" max="100" step="0.000000000001" style="padding: 0;">
+          <div id="bufferingIndicator"></div>
+        </div>
+        <span id="time_value">00:00:00</span>
+      </div>
+      <div id="control_buttons">
+        <div class="controls_grp center_controls">
+          <button class="control_btn" id="playPause" title="Play Pause" onclick="player.playPause()">
+            <img width="20" src="./icons/play.svg" alt="Play">
+          </button>
+          <button class="control_btn" id="back" title="Backward" onclick="player.backward()">
+            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
+          </button>
+          <button class="control_btn" id="forward" title="Forward" onclick="player.forward()">
+            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
+          </button>
+          <div id="volume_controls_container">
+            <button class="control_btn" id="toggleMute" title="Toggle Mute" onclick="player.toggleMute()">
+              <img width="20" src="./icons/volume.svg" alt="Vol">
+            </button>
+            <input type="range" id="volume" name="volume" title="volume" min="0" max="100" step="0.01" value="100"
+              style="padding: 0; max-width: 60px;">
+          </div>
+        </div>
+        <div class="controls_grp right_controls">
+          <button class="control_btn" id="videoSpeed" title="Change speed" onclick="player.changeSpeed()">
+            <span id="currentSpeed">1</span>
+            <img width="20" src="./icons/speed.svg" alt="Speed">
+          </button>
+          <button class="control_btn" title="Fullscreen" id="fullscreen" onclick="player.fullScreen()">
+            <i class="fa-solid fa-expand" style="color: #ffffff;"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <video id="main_vid" aspectIndex="0" autoplay="true" speed="1">
+      <source src="">
+      <h2 class="error">
+        Sorry, Your browser doesn't support HTML videos.
+      </h2>
+    </video>
+  </main>
+
+</body>
+
+</html>
