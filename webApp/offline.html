@@ -1,0 +1,131 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Device Offline</title>
+  <style type="text/css">
+    :root {
+      --background-color: #000000;
+      --primary-color: #eee;
+    }
+
+    [data-theme="dark"] {
+      --background-color: #000000;
+      --primary-color: #eee;
+    }
+
+    html,
+    body {
+      background-color: var(--background-color) !important;
+    }
+
+    body {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 90vh;
+    }
+
+    html,
+    body,
+    button {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 20px;
+      line-height: 1.25rem;
+      letter-spacing: 1.25px;
+    }
+
+    div.container {
+      position: absolute;
+      /* top: 50%; */
+      color: var(--primary-color);
+      text-align: center;
+      height: fit-content;
+    }
+
+    #logo>svg>g>path {
+      fill: var(--primary-color);
+    }
+
+    button {
+      padding: 10px 30px;
+      margin-block: 1rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      /* background-color: red; */
+      background-color: rgb(11, 89, 138);
+      background-image: linear-gradient(to right, rgb(11, 89, 138), rgb(175, 20, 126), rgb(11, 89, 138), rgb(175, 20, 126));
+      background-size: 1000px;
+      color: white;
+      font-weight: light;
+      font-size: 1.1rem;
+      transition: background-color ease-out .4s, scale ease-out .2s;
+      animation: glow linear 10s infinite;
+    }
+
+    button:hover {
+      background-color: rgb(175, 20, 126);
+      scale: 1.05;
+      animation-play-state: paused;
+    }
+
+    @keyframes glow {
+
+      from,
+      to {
+        background-position: 0;
+      }
+
+      50% {
+        background-position: -800px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100"
+        height="100" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve"
+        class="">
+        <g>
+          <g fill-rule="evenodd">
+            <g stroke-width="8.849">
+              <path fill="#1e90ff"
+                d="M256.129 73.482c-5.79 0-11.58.095-15.994.285a371.48 371.48 0 0 0-72.684 10.4l64.574 64.586a286.66 286.66 0 0 1 8.112-.556c8.822-.475 23.161-.475 31.984 0a297.377 297.377 0 0 1 182.665 75.662c6.574 5.902 16.677 5.94 22.926-.309l29.941-29.943c6.248-6.249 6.273-16.408-.238-22.381a371.715 371.715 0 0 0-235.29-97.459c-4.414-.19-10.206-.285-15.996-.285zM67.41 124.927c-22.276 13.124-43.271 28.596-62.566 46.299-6.511 5.973-6.49 16.132-.24 22.38l29.943 29.944c6.248 6.248 16.35 6.211 22.925.309a297.148 297.148 0 0 1 64.684-44.176zm245.237 104.467 79.603 79.617 10.268-10.268c6.248-6.248 6.282-16.43-.397-22.213a223.023 223.023 0 0 0-89.474-47.136zm-134.119 6.674c-24.882 9.234-48.083 22.873-68.394 40.462-6.678 5.784-6.643 15.965-.394 22.213l29.94 29.943c6.25 6.249 16.334 6.168 23.214.63a148.703 148.703 0 0 1 76.904-31.967zm77.6 135.026c-5.785 0-11.57.47-15.877 1.412a74.355 74.355 0 0 0-24.25 10.045c-7.424 4.76-7.373 15.08-1.125 21.328l29.94 29.94a16 16 0 0 0 22.626 0l29.94-29.94c6.248-6.248 6.299-16.567-1.126-21.328a74.365 74.365 0 0 0-24.251-10.045c-4.308-.941-10.093-1.412-15.877-1.412z"
+                opacity="1" data-original="#1e90ff"></path>
+              <path fill="#0584ff"
+                d="M256.32 73.484v74.36c5.725.002 11.439.118 15.8.353a297.377 297.377 0 0 1 182.666 75.662c6.574 5.902 16.677 5.94 22.926-.309l29.941-29.943c6.248-6.249 6.273-16.408-.238-22.381a371.715 371.715 0 0 0-235.29-97.459c-4.365-.187-10.08-.28-15.805-.283zM.321 179.052a15.534 15.534 0 0 0 0 6.729zm312.329 50.342 79.601 79.617 10.268-10.268c6.248-6.248 6.282-16.43-.397-22.213a223.026 223.026 0 0 0-89.472-47.136zm-56.33 141.704v67.406a16 16 0 0 0 11.123-4.685l29.94-29.94c6.248-6.248 6.299-16.567-1.126-21.328a74.365 74.365 0 0 0-24.251-10.045c-4.26-.931-9.966-1.397-15.686-1.408z"
+                opacity="1" data-original="#0584ff"></path>
+            </g>
+            <g transform="matrix(-.75 -.057 .057 .75 415.482 47.389)">
+              <rect width="93.529" height="619.224" x="315.273" y="-309.592" fill="#f6616a" rx="52.667" ry="45.274"
+                transform="rotate(45)" opacity="1" data-original="#f6616a"></rect>
+              <path fill="#f64650"
+                d="m474.938 37.084.028.03c-.407.397-.814.78-1.22 1.187L38.268 473.778c-.407.407-.791.814-1.189 1.222l-.006-.006c-18.322-18.324-18.792-47.354-1.056-65.092L409.854 36.026c17.736-17.737 46.763-17.266 65.084 1.058z"
+                opacity="1" data-original="#f64650"></path>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <span id="message">
+      <p>No internet connection<br />Check your connection and try again</p>
+    </span>
+    <button id="retryButton" type="button" onclick="gonative.webview.reload()">Retry</button>
+  </div>
+  <script>
+    var message = document.getElementById('message');
+    var retryButton = document.getElementById('retryButton')
+    if (['ko', 'ko-kr', 'ko-kp'].indexOf(navigator.language.toLowerCase()) > -1) {
+      // Korean
+      message.innerHTML = '<p>인터넷 연결이 끊겼습니다.<br/>연결하고 다시 시도하시길 바랍니다.</p>';
+      retryButton.innerText = '괜찮아';
+    }
+  </script>
+</body>
+
+</html>

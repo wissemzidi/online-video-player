@@ -14,9 +14,11 @@ class Player {
   constructor(videoUrl, video, timeCount, timeRange, title, time) {
     this.videoUrl = videoUrl;
     this.video = video;
+    $(this.video).show();
     this.source = document.querySelector("source");
     this.timeCount = timeCount;
     this.timeRange = timeRange;
+    this.counter = 0;
     if (title != undefined && title.toString() != "null") {
       $("#video_title").text(`${title}`);
     }
@@ -31,21 +33,31 @@ class Player {
     this.source.src = videoUrl;
     this.video.load();
 
+    this.time_interval = initMainInterval();
+
     handlePlayerError(this.video);
+    listenToKeyEvents();
   }
 
   updateTime() {
+    $(this.timeRange).val(this.video.currentTime);
+    saveCurrTime();
+
     let { hours, minutes, seconds } = getCurrentTime(this.video.currentTime);
     $(this.timeCount).text(hours + ":" + minutes + ":" + seconds);
     $(this.timeRange).css(
       "--current-percentage",
       (this.video.currentTime * 100) / this.video.duration + "%"
     );
+
+    this.video.played ? this.counter++ : "";
+    this.counter > 3 && !this.video.paused ? this.hideControls(300) : "";
   }
 
   changeTime(newTime) {
     this.video.currentTime = newTime;
     this.updateTime();
+    this.counter = 0;
   }
 
   changeSpeed() {
@@ -103,11 +115,19 @@ class Player {
     this.video.currentTime += 10;
     this.animateActionsBtn("forward");
     this.updateTime();
+    $("#videoRightSide").css("opacity", 1);
+    setTimeout(() => {
+      $("#videoRightSide").css("opacity", 0);
+    }, 300);
   }
   backward() {
     this.video.currentTime -= 10;
     this.animateActionsBtn("backward");
     this.updateTime();
+    $("#videoLeftSide").css("opacity", 1);
+    setTimeout(() => {
+      $("#videoLeftSide").css("opacity", 0);
+    }, 300);
   }
 
   isFullscreen() {
@@ -265,238 +285,116 @@ class Player {
     $("#center_btn").stop(true, false).fadeIn(animationDuration);
     $("#dimmBg").stop(true, false).fadeIn(animationDuration);
     $("#video_header").stop(true, false).fadeIn(animationDuration);
+    this.counter = 0;
   }
   toggleControls(animationDuration) {
     $("#controls").stop(true, false).fadeToggle(animationDuration);
     $("#center_btn").stop(true, false).fadeToggle(animationDuration);
     $("#dimmBg").stop(true, false).fadeToggle(animationDuration);
     $("#video_header").stop(true, false).fadeToggle(animationDuration);
+    this.counter = 0;
   }
 }
 
-let player = new Player(
-  "",
-  document.getElementById("main_vid"),
-  document.getElementById("time_value"),
-  document.getElementById("time_range")
-);
+var is_player_created = false;
+var player = null;
 
-// on document ready
-$(function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const movieUrl = decodeURI(urlParams.get("url"));
-  let time_interval;
+function loadLocalVideo() {
+  let file = document.getElementById("video_file").files[0];
+  let fileURL = window.URL.createObjectURL(file);
+  player = new Player(
+    fileURL,
+    document.getElementById("main_vid"),
+    document.getElementById("time_value"),
+    document.getElementById("time_range")
+  );
+  activate_player();
+  popupTimedMsg(" Loading video  ", 2000, 200);
+  return;
+}
 
-  if (
-    movieUrl != "null" &&
-    movieUrl != null &&
-    movieUrl.trim() != "" &&
-    movieUrl != undefined
-  ) {
-    player = new Player(
-      movieUrl,
-      document.getElementById("main_vid"),
-      document.getElementById("time_value"),
-      document.getElementById("time_range")
-    );
-    time_interval = setInterval(function () {
-      player.updateTime();
-    }, 1000);
-    player.fullScreen();
-  } else {
-    popupTimedMsg("Please select Media First !", 4000, 400);
-    $(".spinner").hide();
-    return;
-  }
-
-  listenToKeyEvents();
-
-  let counter = 0;
-  setInterval(() => {
-    counter++;
-    if (counter > 3) {
-      player.hideControls(400);
-    }
-  }, 1000);
-
-  $("#time_range").on("mousemove", function (e) {
-    $(this).css("--indicator-left-pos", e.clientX - 12 + "px");
-  });
-
-  $("#time_range").on("input", function () {
-    player.changeTime(
-      Math.round(($(this).val() * player.video.duration) / 100)
-    );
-  });
-  $("#volume").on("input", function () {
-    player.changeVolume($(this).val());
-  });
+function activate_player() {
+  handleShowHideControls();
+  handleTouchMove();
 
   $(".control_btn").on("click", function () {
-    counter = 0;
+    player.counter = 0;
   });
+}
 
-  $("#volume").on("click input mousemove", function (e) {
-    player.showControls(200);
-    counter = 0;
-  });
+function initMainInterval() {
+  return setInterval(function () {
+    player.updateTime();
+  }, 1000);
+}
 
-  //
-  //
-  // * Phone features Only
-  //
-  if (!window.matchMedia("(hover: hover)").matches) {
-    $(player.video).on("click", player.showControls(200));
-
-    let startTouchPos = null;
-    let timeCurrentPercentage = null;
-    let changePercentage = 0;
-    $(`#${player.video.id}, #videoLeftSide, #videoRightSide`).on(
-      "touchmove",
-      function (e) {
-        if (startTouchPos == null || timeCurrentPercentage == null) {
-          player.pause();
-          clearInterval(time_interval);
-          startTouchPos = e.touches[0].clientX;
-          timeCurrentPercentage = Number(
-            $("#time_range").css("--current-percentage").replace("%", "")
-          );
-        }
-        changePercentage =
-          ((e.changedTouches[0].clientX - startTouchPos) * 100) / screen.width;
-        let newPercentage = timeCurrentPercentage + changePercentage;
-        newPercentage >= 100 ? (newPercentage = 100) : "";
-        newPercentage <= 0 ? (newPercentage = 0) : "";
-        $("#time_range").css(
-          "--current-percentage",
-          newPercentage.toString() + "%"
+function handleTouchMove() {
+  let startTouchPos = null;
+  let timeCurrentPercentage = null;
+  let changePercentage = 0;
+  $(`#${player.video.id}, #videoLeftSide, #videoRightSide`).on(
+    "touchmove",
+    function (e) {
+      if (startTouchPos == null || timeCurrentPercentage == null) {
+        player.pause();
+        clearInterval(player.time_interval);
+        startTouchPos = e.touches[0].clientX;
+        timeCurrentPercentage = Number(
+          $("#time_range").css("--current-percentage").replace("%", "")
         );
-        let { hours, minutes, seconds } = getCurrentTime(
-          (player.video.duration * newPercentage) / 100
-        );
-        $(player.timeCount).text(hours + ":" + minutes + ":" + seconds);
-        player.showControls(100);
-        counter = 0;
       }
-    );
-    $(`#${player.video.id}, #videoLeftSide, #videoRightSide`).on(
-      "touchend",
-      function (e) {
-        if (changePercentage == null || timeCurrentPercentage == null) {
-          return;
-        }
-
-        if (changePercentage > 0) {
-          player.video.currentTime +=
-            (changePercentage * player.video.duration) / 100;
-        } else {
-          player.video.currentTime -=
-            (Math.abs(changePercentage) * player.video.duration) / 100;
-        }
-        startTouchPos = null;
-        timeCurrentPercentage = null;
-        player.updateTime();
-        time_interval = setInterval(function () {
-          player.updateTime();
-        }, 1000);
-        player.play();
+      changePercentage =
+        ((e.changedTouches[0].clientX - startTouchPos) * 100) / screen.width;
+      let newPercentage = timeCurrentPercentage + changePercentage;
+      newPercentage >= 100 ? (newPercentage = 100) : "";
+      newPercentage <= 0 ? (newPercentage = 0) : "";
+      $("#time_range").css(
+        "--current-percentage",
+        newPercentage.toString() + "%"
+      );
+      let { hours, minutes, seconds } = getCurrentTime(
+        (player.video.duration * newPercentage) / 100
+      );
+      $(player.timeCount).text(hours + ":" + minutes + ":" + seconds);
+      player.showControls(100);
+    }
+  );
+  $(`#${player.video.id}, #videoLeftSide, #videoRightSide`).on(
+    "touchend",
+    function (e) {
+      if (changePercentage == null || timeCurrentPercentage == null) {
+        return;
       }
-    );
 
-    $("#videoLeftSide").on("dblclick", function () {
-      player.backward();
-      $(this).css("opacity", 1);
-      setTimeout(() => {
-        $(this).css("opacity", 0);
-      }, 300);
-    });
-
-    $("#videoRightSide").on("dblclick", function () {
-      player.forward();
-      $(this).css("opacity", 1);
-      setTimeout(() => {
-        $(this).css("opacity", 0);
-      }, 300);
-    });
-
-    $("#video_container").on("click", function (e) {
-      console.log(e.target.tagName);
-      if (
-        e.target.tagName.toUpperCase() == "IMG" ||
-        e.target.tagName.toUpperCase() == "VIDEO" ||
-        e.target.tagName.toUpperCase() == "BUTTON" ||
-        e.target.tagName.toUpperCase() == "SPAN" ||
-        e.target.tagName.toUpperCase() == "INPUT"
-      ) {
-        player.showControls(200);
-        counter = 0;
+      if (changePercentage > 0) {
+        player.video.currentTime +=
+          (changePercentage * player.video.duration) / 100;
       } else {
-        player.toggleControls(200);
-        counter = 0;
+        player.video.currentTime -=
+          (Math.abs(changePercentage) * player.video.duration) / 100;
       }
-    });
-  } else {
-    //
-    //
-    // * PC features Only
-    //
+      startTouchPos = null;
+      timeCurrentPercentage = null;
+      player.updateTime();
+      player.time_interval = setInterval(function () {
+        player.updateTime();
+      }, 1000);
+      player.play();
+    }
+  );
+}
 
-    $(document).on("mousemove", function () {
+function handleShowHideControls() {
+  $("#video_container").on("click", function (e) {
+    if (
+      e.target.tagName.toUpperCase() == "IMG" ||
+      e.target.tagName.toUpperCase() == "BUTTON" ||
+      e.target.tagName.toUpperCase() == "SPAN" ||
+      e.target.tagName.toUpperCase() == "INPUT"
+    ) {
       player.showControls(200);
-      counter = 0;
-    });
-
-    $("#video_container").on("click input mousemove mousedown", function (e) {
-      player.showControls(200);
-      counter = 0;
-    });
-
-    player.video.onclick = () => {
-      player.playPause();
-      counter = 0;
-    };
-    player.video.ondblclick = () => {
-      player.fullScreen();
-    };
-  }
-});
-
-function listenToKeyEvents() {
-  $(document).on("keydown", function (e) {
-    switch (e.key.toUpperCase()) {
-      case "F11":
-      case "F":
-        e.preventDefault();
-        player.fullScreen();
-        break;
-      case " ":
-      case "K":
-        player.playPause();
-        break;
-      case "M":
-        player.toggleMute();
-        break;
-      case "ARROWRIGHT":
-      case "L":
-        player.forward();
-        break;
-      case "ARROWLEFT":
-      case "J":
-        player.backward();
-        break;
-      case "ARROWUP":
-        player.volumeUp();
-        break;
-      case "ARROWDOWN":
-        player.volumeDown();
-        break;
-      case "S":
-        player.changeSpeed();
-        break;
-      case "+":
-      case "-":
-        player.changeAspectRatio();
-        break;
+    } else {
+      player.toggleControls(200);
     }
   });
 }
@@ -514,6 +412,9 @@ function handlePlayerError(video) {
 
   video.addEventListener("canplay", (e) => {
     $(".spinner").hide();
+    $(player.timeRange).attr("max", video.duration);
+    $(player.timeRange).css("--thumb-color", "red");
+
     var promise = video.play();
 
     if (promise !== undefined) {
@@ -558,28 +459,48 @@ function popupTimedMsg(msg, duration, animationDuration) {
   }, duration);
 }
 
-function slideIn(ele, distance) {
-  $(ele).css("display", "block");
-  $(ele).stop(true, false).animate({
-    top: distance,
-    opacity: 1,
+function listenToKeyEvents() {
+  $(document).on("keydown", function (e) {
+    switch (e.key.toUpperCase()) {
+      case "F11":
+      case "F":
+        e.preventDefault();
+        player.fullScreen();
+        break;
+      case " ":
+      case "K":
+        player.playPause();
+        break;
+      case "M":
+        player.toggleMute();
+        break;
+      case "ARROWRIGHT":
+      case "L":
+        player.forward();
+        break;
+      case "ARROWLEFT":
+      case "J":
+        player.backward();
+        break;
+      case "ARROWUP":
+        player.volumeUp();
+        break;
+      case "ARROWDOWN":
+        player.volumeDown();
+        break;
+      case "S":
+        player.changeSpeed();
+        break;
+      case "+":
+      case "-":
+        player.changeAspectRatio();
+        break;
+    }
   });
 }
 
-function loadLocalVideo() {
-  console.log("changing vid");
-  var file = document.getElementById("video_file").files[0];
-  var fileURL = window.URL.createObjectURL(file);
-  player = new Player(
-    fileURL,
-    document.getElementById("main_vid"),
-    document.getElementById("time_value"),
-    document.getElementById("time_range")
-  );
-  time_interval = setInterval(function () {
-    player.updateTime();
-  }, 1000);
-  player.fullScreen();
-
-  return;
+function saveCurrTime() {
+  console.log("saving current time...");
+  console.log($("#time_range").val());
+  localStorage.setItem(`${player.videoUrl}`, `${$("#time_range").val()}`);
 }

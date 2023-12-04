@@ -25,13 +25,20 @@
     <div id="actions_viewer">
       <img width="45px" src="" alt="">
     </div>
+    <button id="centerLoadFileBtn" onclick="$('#video_file').click()">
+      Choose a video file
+      <svg width="25" height="25" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24">
+        <path
+          d="M18.83,21.77c-.21-.18-.52-.16-.71,.04-.66,.75-1.62,1.19-2.62,1.19H4.5c-1.93,0-3.5-1.57-3.5-3.5V4.5c0-1.93,1.57-3.5,3.5-3.5h5.51c.33,0,.66,.03,.99,.09V6.5c0,1.38,1.12,2.5,2.5,2.5h5.41c.06,.32,.09,.65,.09,.99v.51c0,.28,.22,.5,.5,.5s.5-.22,.5-.5v-.51c0-1.74-.68-3.37-1.9-4.6l-3.48-3.48c-1.23-1.23-2.86-1.9-4.6-1.9H4.5C2.02,0,0,2.02,0,4.5v15c0,2.48,2.02,4.5,4.5,4.5H15.5c1.29,0,2.52-.56,3.38-1.52,.18-.21,.16-.52-.04-.71Zm-1.44-15.67c.55,.55,.97,1.2,1.24,1.9h-5.13c-.83,0-1.5-.67-1.5-1.5V1.37c.71,.27,1.35,.69,1.9,1.24l3.48,3.48Zm6.61,10.41c0,.5-.19,1-.58,1.38l-2.57,2.52c-.1,.09-.22,.14-.35,.14s-.26-.05-.36-.15c-.19-.2-.19-.51,0-.71l2.57-2.51c.06-.06,.1-.12,.14-.18H13.5c-.28,0-.5-.22-.5-.5s.22-.5,.5-.5h9.36c-.04-.07-.09-.13-.15-.19l-2.57-2.51c-.2-.19-.2-.51,0-.71,.19-.2,.51-.2,.71,0l2.57,2.51c.38,.38,.58,.89,.58,1.39,0,0,0,0,0,0s0,0,0,0Z" />
+      </svg>
+    </button>
     <button id="center_btn" onclick="player.playPause()">
       <img width="20" src="icons/play.svg" alt="">
     </button>
-    <div id="videoLeftSide">
+    <div id="videoLeftSide" ondblclick="player.backward()">
       <img width="50" src="./icons/backward.svg" alt="">
     </div>
-    <div id="videoRightSide">
+    <div id="videoRightSide" ondblclick="player.forward()">
       <img width="50" src="./icons/forward.svg" alt="">
     </div>
     <div id="popup">
@@ -46,7 +53,7 @@
         <button class="control_btn" id="addVid" title="Add local video" onclick="$('#video_file').click()">
           <img width="22" style="opacity: .8;" src="./icons/add.svg" alt="Add">
         </button>
-        <input type="file" id="video_file" onchange="loadLocalVideo()" accept="video/*" hidden>
+        <input type="file" id="video_file" onchange="loadLocalVideo(); $('#centerLoadFileBtn').hide()" accept="video/*" hidden>
         <div id="video_title_container">
           <h3 id="video_title"></h3>
         </div>
@@ -63,7 +70,8 @@
     <div id="controls">
       <div id="time_controls_container">
         <div class="time_range_input_container">
-          <input id="time_range" type="range" value="0" min="0" max="100" step="0.000000000001" style="padding: 0;">
+          <input id="time_range" type="range" onchange="player.changeTime($(this).val());"
+            oninput="player.changeTime($(this).val());" value="0" min="0" max="100" step="1" style="padding: 0;">
           <div id="bufferingIndicator"></div>
         </div>
         <span id="time_value">00:00:00</span>
@@ -83,7 +91,7 @@
             <button class="control_btn" id="toggleMute" title="Toggle Mute" onclick="player.toggleMute()">
               <img width="20" src="./icons/volume.svg" alt="Vol">
             </button>
-            <input type="range" id="volume" name="volume" title="volume" min="0" max="100" step="0.01" value="100"
+            <input type="range" id="volume" name="volume" class="control" title="volume" min="0" max="100" step="0.01" value="100"
               style="padding: 0; max-width: 60px;">
           </div>
         </div>
@@ -98,8 +106,8 @@
         </div>
       </div>
     </div>
-    <video id="main_vid" aspectIndex="0" autoplay="true" speed="1">
-      <source src="">
+    <video id="main_vid" aspectIndex="0" hidden autoplay="true" speed="1">
+      <source src="" hidden>
       <h2 class="error">
         Sorry, Your browser doesn't support HTML videos.
       </h2>
