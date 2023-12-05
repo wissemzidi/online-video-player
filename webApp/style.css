@@ -357,6 +357,15 @@ button {
 #video_title_container > * {
   font-weight: 400;
 }
+#video_title {
+  max-height: 2ch;
+  overflow: hidden;
+  transition: all ease .3s;
+}
+#video_title:where(:hover, :focus-visible, :focus) {
+  max-height: auto;
+  overflow: visible;
+}
 
 
 #videoSpeed, #aspectRatio {
@@ -380,7 +389,7 @@ button {
   align-items: center;
   gap: 0.1rem;
   margin: 0.25rem;
-  padding-right: 0.4rem;
+  /* padding-right: 0.4rem; */
   border: none;
   border-radius: 99999px;
 }
@@ -388,7 +397,17 @@ button {
   background-color: rgba(76, 76, 76, 0.4);
 }
 
-input#volume {
+#volume_controls_container:hover input#volume,
+#volume_controls_container:focus-visible input#volume {
+  --thumb-color: white;
+
+  transition: width calc(var(--animation-latency) + 0.1s) ease, opacity var(--animation-latency) ease 0.05s;
+
+  width: var(--slider-width);
+  opacity: 1;
+}
+
+/* input#volume {
   --slider-width: 50px;
   --track-height: 5px;
   --animation-latency: .3s;
@@ -410,22 +429,13 @@ input#volume {
   outline: 1px solid transparent;
   cursor: pointer;
   transition: width calc(var(--animation-latency) + 0.1s) ease, opacity var(--animation-latency) ease 0s;
-}
-#volume_controls_container:hover input#volume,
-#volume_controls_container:focus-visible input#volume {
-  --thumb-color: white;
-
-  transition: width calc(var(--animation-latency) + 0.1s) ease, opacity var(--animation-latency) ease 0.05s;
-
-  width: var(--slider-width);
-  opacity: 1;
-}
-input#volume::-webkit-slider-runnable-track{
+} */
+/* input#volume::-webkit-slider-runnable-track{
   border-radius: 2rem;
   height: var(--track-height);
   background-color: rgba(76, 76, 76, 0.4);
-}
-input#volume::-webkit-slider-thumb {
+} */
+/* input#volume::-webkit-slider-thumb {
   -webkit-appearance: none;
   -moz-appearance: none;
 
@@ -437,13 +447,13 @@ input#volume::-webkit-slider-thumb {
   border-radius: 999999px;
 
   transition: background-color ease var(--animation-latency);
-}
-input#volume::-moz-range-track{
+} */
+/* input#volume::-moz-range-track{
   border-radius: 2rem;
   height: var(--track-height);
   background-color: rgba(76, 76, 76, 0.4);
-}
-input#volume::-moz-range-thumb {
+} */
+/* input#volume::-moz-range-thumb {
   -webkit-appearance: none;
   -moz-appearance: none;
 
@@ -455,7 +465,7 @@ input#volume::-moz-range-thumb {
 
   transition: background-color ease var(--animation-latency);
 
-}
+} */
 
 
 .error {

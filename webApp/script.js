@@ -191,12 +191,12 @@ class Player {
     this.video.muted = !this.video.muted;
     this.animateActionsBtn(this.video.muted ? "mute" : "volume");
     if (this.video.muted) {
-      $("#volume").css("--volume", 0);
-      $("#volume").val(0);
+      // $("#volume").css("--volume", 0);
+      // $("#volume").val(0);
       $("#toggleMute img").attr("src", "./icons/mute.svg");
     } else {
-      $("#volume").css("--volume", 100);
-      $("#volume").val(100);
+      // $("#volume").css("--volume", 100);
+      // $("#volume").val(100);
       $("#toggleMute img").attr("src", "./icons/volume.svg");
     }
   }
@@ -204,15 +204,15 @@ class Player {
   volumeUp() {
     this.video.muted = false;
     this.video.volume += 0.1;
-    $("#volume").css("--volume", this.video.volume * 100 + "%");
-    $("#volume").val(this.video.volume * 100);
+    // $("#volume").css("--volume", this.video.volume * 100 + "%");
+    // $("#volume").val(this.video.volume * 100);
     this.animateActionsBtn("volumeUp");
   }
   volumeDown() {
     this.video.muted = false;
     this.video.volume -= 0.1;
-    $("#volume").css("--volume", this.video.volume * 100 + "%");
-    $("#volume").val(this.video.volume * 100);
+    // $("#volume").css("--volume", this.video.volume * 100 + "%");
+    // $("#volume").val(this.video.volume * 100);
     this.animateActionsBtn("volumeDown");
   }
   changeVolume(newVolume) {
@@ -225,8 +225,8 @@ class Player {
     }
 
     this.video.volume = newVolume / 100;
-    $("#volume").val(newVolume);
-    $("#volume").css("--volume", newVolume + "%");
+    // $("#volume").val(newVolume);
+    // $("#volume").css("--volume", newVolume + "%");
   }
 
   changeAspectRatio() {
@@ -301,12 +301,14 @@ var player = null;
 
 function loadLocalVideo() {
   let file = document.getElementById("video_file").files[0];
+  let fileName = file.name;
   let fileURL = window.URL.createObjectURL(file);
   player = new Player(
     fileURL,
     document.getElementById("main_vid"),
     document.getElementById("time_value"),
-    document.getElementById("time_range")
+    document.getElementById("time_range"),
+    fileName
   );
   activate_player();
   popupTimedMsg(" Loading video  ", 2000, 200);
