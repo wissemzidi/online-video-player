@@ -14,7 +14,6 @@ class Player {
   constructor(videoUrl, video, timeCount, timeRange, title, time) {
     this.videoUrl = videoUrl;
     this.video = video;
-    $(this.video).show();
     this.source = document.querySelector("source");
     this.timeCount = timeCount;
     this.timeRange = timeRange;
@@ -49,6 +48,7 @@ class Player {
       "--current-percentage",
       (this.video.currentTime * 100) / this.video.duration + "%"
     );
+    console.log($(this.timeRange).css("--current-percentage"));
 
     this.video.played ? this.counter++ : "";
     this.counter > 3 && !this.video.paused ? this.hideControls(300) : "";
@@ -412,6 +412,7 @@ function handlePlayerError(video) {
 
   video.addEventListener("canplay", (e) => {
     $(".spinner").hide();
+    $(player.video).show();
     $(player.timeRange).attr("max", video.duration);
     $(player.timeRange).css("--thumb-color", "red");
 
@@ -500,7 +501,5 @@ function listenToKeyEvents() {
 }
 
 function saveCurrTime() {
-  console.log("saving current time...");
-  console.log($("#time_range").val());
   localStorage.setItem(`${player.videoUrl}`, `${$("#time_range").val()}`);
 }

@@ -264,9 +264,11 @@ button {
 }
 #time_range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  -moz-appearance: none;
+  /* -moz-appearance: none; */
   position: absolute;
-  left: calc(var(--current-percentage) - calc(var(--thumb-size) / 2) - 2);
+  top: calc(-1 * (var(--thumb-size) / 3));
+  /* left: calc(var(--current-percentage) - calc(var(--thumb-size) / 2) - 2); */
+  left: var(--current-percentage);
   width: var(--thumb-size);
   height: var(--thumb-size);
   background: var(--thumb-color);
@@ -276,9 +278,11 @@ button {
 }
 #time_range::-moz-range-thumb {
   -webkit-appearance: none;
-  -moz-appearance: none;
+  /* -moz-appearance: none; */
   position: absolute;
-  left: calc(var(--current-percentage) - calc(var(--thumb-size) / 2) - 2);
+  top: calc(-1 * (var(--thumb-size) / 3));
+  /* left: calc(var(--current-percentage) - calc(var(--thumb-size) / 2) - 2); */
+  left: var(--current-percentage);
   width: var(--thumb-size);
   height: var(--thumb-size);
   background: var(--thumb-color);
