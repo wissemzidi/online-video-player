@@ -60,7 +60,7 @@ button {
   border: none;
   outline: none;
   backdrop-filter: blur(10px);
-  
+
   transform: translate3d(0, 0, 0);
   isolation: isolate;
 
@@ -93,7 +93,7 @@ button {
   height: 100svh;
   max-height: 100vh;
   max-height: 100svh;
-  
+
   width: 100vw;
   width: 100svw;
   max-width: 100vw;
@@ -192,23 +192,20 @@ button {
   opacity: 0.6;
 }
 
-
 #popup {
   display: none;
   position: absolute;
   opacity: 0;
   top: -1rem;
-  padding: .5rem .8rem;
+  padding: 0.5rem 0.8rem;
   border-radius: 1rem;
   left: 50%;
   translate: -50% 0;
   background-color: rgba(18, 81, 181, 0.5);
 
-  transition: background-color ease-out .3s;
+  transition: background-color ease-out 0.3s;
   z-index: 2;
 }
-
-
 
 #controls {
   position: absolute;
@@ -221,10 +218,10 @@ button {
 }
 
 #time_controls_container {
-  padding: .5rem;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   justify-content: center;
 }
 .time_range_input_container {
@@ -317,9 +314,9 @@ button {
   align-items: center;
   width: clamp(35px, 7vw, 50px);
   aspect-ratio: 1/1;
-  margin: 0.25rem;
+  margin: 0.2rem;
   border-radius: 9999rem;
-  transition: background-color ease 0.3s, scale ease .3s;
+  transition: background-color ease 0.3s, scale ease 0.3s;
 }
 .control_btn:hover:not(#toggleMute) {
   background-color: rgba(76, 76, 76, 0.4);
@@ -337,7 +334,7 @@ button {
   top: 0;
   left: 0;
   width: 100%;
-  padding: .5rem;
+  padding: 0.5rem;
   z-index: 1;
 }
 #video_header #upper_controls_container {
@@ -360,19 +357,19 @@ button {
 #video_title {
   max-height: 2ch;
   overflow: hidden;
-  transition: all ease .3s;
+  transition: all ease 0.3s;
 }
 #video_title:where(:hover, :focus-visible, :focus) {
   max-height: auto;
   overflow: visible;
 }
 
-
-#videoSpeed, #aspectRatio {
+#videoSpeed,
+#aspectRatio {
   position: relative;
 }
 #videoSpeed span {
-  font-size: .75rem;
+  font-size: 0.75rem;
   border-radius: 99rem;
   position: absolute;
   top: 15%;
@@ -401,175 +398,28 @@ button {
 #volume_controls_container:focus-visible input#volume {
   --thumb-color: white;
 
-  transition: width calc(var(--animation-latency) + 0.1s) ease, opacity var(--animation-latency) ease 0.05s;
+  transition: width calc(var(--animation-latency) + 0.1s) ease,
+    opacity var(--animation-latency) ease 0.05s;
 
   width: var(--slider-width);
   opacity: 1;
 }
-
-/* input#volume {
-  --slider-width: 50px;
-  --track-height: 5px;
-  --animation-latency: .3s;
-  --thumb-color: transparent;
-  --thumb-size: 12px;
-  --volume: 100%;
-
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: transparent;
-  margin-right: 0.4rem;
-  width: 0;
-  opacity: 0;
-  height: 5px;
-  background-image: linear-gradient(white, white);
-  background-size: var(--volume) 100%;
-  background-repeat: no-repeat;
-  border-radius: 999px;
-  outline: 1px solid transparent;
-  cursor: pointer;
-  transition: width calc(var(--animation-latency) + 0.1s) ease, opacity var(--animation-latency) ease 0s;
-} */
-/* input#volume::-webkit-slider-runnable-track{
-  border-radius: 2rem;
-  height: var(--track-height);
-  background-color: rgba(76, 76, 76, 0.4);
-} */
-/* input#volume::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  appearance: none;
-  margin-top: calc(-1 * var(--track-height) / 2);
-  width: var(--thumb-size);
-  height: var(--thumb-size);
-  background-color: var(--thumb-color);
-  border-radius: 999999px;
-
-  transition: background-color ease var(--animation-latency);
-} */
-/* input#volume::-moz-range-track{
-  border-radius: 2rem;
-  height: var(--track-height);
-  background-color: rgba(76, 76, 76, 0.4);
-} */
-/* input#volume::-moz-range-thumb {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  appearance: none;
-  width: var(--thumb-size);
-  height: var(--thumb-size);
-  background-color: var(--thumb-color);
-  border-radius: 999999px;
-
-  transition: background-color ease var(--animation-latency);
-
-} */
-
 
 .error {
   color: red;
   text-align: center;
 }
 
-@media (min-width: 700px) {
-  
-  .control_btn i {
-    scale: 1.25;
-  }
-  .control_btn img {
-    scale: 1.25;
-  }
-  #volume_controls_container {
-    padding-right: 0.7rem;
-  }
-  input#volume {
-    --thumb-size: 15px;
-    --slider-width: 80px;
-    --track-height: 8px;
-  }
-
-  #center_btn {
-    scale: 1.5;
-  }
-
-  #time_range {
-    --thumb-size: 20px;
-
-    height: 7px;
-    min-width: calc(100% - 9ch);
-  }
-  #time_range:hover {
-    height: 10px;
-    min-width: calc(100% - 9ch);
-  }
+#actions_viewer {
+  display: none !important;
 }
-
-@media (max-width: 400px) {
-  #controls {
-    padding: 0.25rem;
-    gap: 0.25rem;
-  }
-
-  .control_btn {
-    padding: 0.1rem;
-    background-color: transparent;
-    border: 1px solid transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 25px;
-    aspect-ratio: 1/1;
-    margin: 0.1rem;
-    transition: all ease 0.3s;
-  }
-  /* input#volume {
-    --thumb-size: 7px;
-    --slider-width: 30px;
-  } */
-
-  #time_range {
-    --thumb-size: 12px;
-
-    height: 5px;
-    min-width: calc(100% - 9ch);
-  }
-  #time_range:hover {
-    height: 6px;
-  }
-
-  #controls {
-    padding: 0.2rem;
-    gap: 0rem;
-  }
+#volume_controls_container:hover {
+  background-color: transparent;
 }
-
-/* For Mobile */
-@media (hover: none) {
-  #actions_viewer {
-    display: none !important;
-  }
-  #volume_controls_container:hover {
-    background-color: transparent;
-  }
-  .control_btn:hover {
-    background-color: transparent !important;
-    border: none;
-  }
-  #time_range::before {
-    display: none !important;
-  }
+.control_btn:hover {
+  background-color: transparent !important;
+  border: none;
 }
-
-
-/* For PC */
-@media (hover: hover) {
-  #videoLeftSide, #videoRightSide, #center_btn {
-    display: none !important;
-  }
-  /* .control_btn:hover:not(#toggleMute) {
-    scale: 1.25;
-  } */
+#time_range::before {
+  display: none !important;
 }
-

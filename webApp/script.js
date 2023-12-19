@@ -48,7 +48,6 @@ class Player {
       "--current-percentage",
       (this.video.currentTime * 100) / this.video.duration + "%"
     );
-    console.log($(this.timeRange).css("--current-percentage"));
 
     this.video.played ? this.counter++ : "";
     this.counter > 3 && !this.video.paused ? this.hideControls(300) : "";
@@ -78,13 +77,11 @@ class Player {
       // playing....
       playPauseIcon.attr("src", "./icons/pause.svg");
       centerBtn.attr("src", "./icons/pause.svg");
-      this.animateActionsBtn("pause");
       this.video.play();
     } else {
       // pausing...
       playPauseIcon.attr("src", "./icons/play.svg");
       centerBtn.attr("src", "./icons/play.svg");
-      this.animateActionsBtn("play");
       this.video.pause();
     }
   }
@@ -94,7 +91,6 @@ class Player {
     // playing....
     playPauseIcon.attr("src", "./icons/pause.svg");
     centerBtn.attr("src", "./icons/pause.svg");
-    this.animateActionsBtn("pause");
     this.video.play();
   }
   pause() {
@@ -103,7 +99,6 @@ class Player {
     // pausing...
     playPauseIcon.attr("src", "./icons/play.svg");
     centerBtn.attr("src", "./icons/play.svg");
-    this.animateActionsBtn("play");
     this.video.pause();
   }
 
@@ -113,7 +108,6 @@ class Player {
   }
   forward() {
     this.video.currentTime += 10;
-    this.animateActionsBtn("forward");
     this.updateTime();
     $("#videoRightSide").css("opacity", 1);
     setTimeout(() => {
@@ -122,7 +116,6 @@ class Player {
   }
   backward() {
     this.video.currentTime -= 10;
-    this.animateActionsBtn("backward");
     this.updateTime();
     $("#videoLeftSide").css("opacity", 1);
     setTimeout(() => {
@@ -189,44 +182,11 @@ class Player {
 
   toggleMute() {
     this.video.muted = !this.video.muted;
-    this.animateActionsBtn(this.video.muted ? "mute" : "volume");
     if (this.video.muted) {
-      // $("#volume").css("--volume", 0);
-      // $("#volume").val(0);
       $("#toggleMute img").attr("src", "./icons/mute.svg");
     } else {
-      // $("#volume").css("--volume", 100);
-      // $("#volume").val(100);
       $("#toggleMute img").attr("src", "./icons/volume.svg");
     }
-  }
-
-  volumeUp() {
-    this.video.muted = false;
-    this.video.volume += 0.1;
-    // $("#volume").css("--volume", this.video.volume * 100 + "%");
-    // $("#volume").val(this.video.volume * 100);
-    this.animateActionsBtn("volumeUp");
-  }
-  volumeDown() {
-    this.video.muted = false;
-    this.video.volume -= 0.1;
-    // $("#volume").css("--volume", this.video.volume * 100 + "%");
-    // $("#volume").val(this.video.volume * 100);
-    this.animateActionsBtn("volumeDown");
-  }
-  changeVolume(newVolume) {
-    if (newVolume <= 0) {
-      $("#toggleMute img").attr("src", "./icons/mute.svg");
-      this.animateActionsBtn("mute");
-    } else {
-      this.video.muted = false;
-      $("#toggleMute img").attr("src", "./icons/volume.svg");
-    }
-
-    this.video.volume = newVolume / 100;
-    // $("#volume").val(newVolume);
-    // $("#volume").css("--volume", newVolume + "%");
   }
 
   changeAspectRatio() {
@@ -267,11 +227,6 @@ class Player {
         popupTimedMsg("Aspect Ratio : Height fill", 3000, 300);
         break;
     }
-  }
-
-  animateActionsBtn(iconName) {
-    $("#actions_viewer img").attr("src", `./icons/${iconName}.svg`);
-    $("#actions_viewer").fadeTo(150, 0.5).fadeOut(250);
   }
 
   hideControls(animationDuration) {

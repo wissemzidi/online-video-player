@@ -1,0 +1,15 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+
+<widget 
+  android-versionCode = "1"
+  id = "com.wissemzidi"
+  version = "1.0.0"
+  xmlns = "https://wissem-zidi-ofc.netlify.app">
+
+  <name>OVP</name>
+  <description>An easy to use video player</description>
+  <author>wissemzidi</author>
+
+  <preference name = "orientation" value = "portrait">
+
+</widget>

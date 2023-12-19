@@ -22,12 +22,13 @@
     <h1 id="errorContainer"></h1>
     <div class="spinner"></div>
     <div id="dimmBg"></div>
-    <div id="actions_viewer">
+    <!-- <div id="actions_viewer">
       <img width="45px" src="" alt="">
-    </div>
+    </div> -->
     <button id="centerLoadFileBtn" onclick="$('#video_file').click()">
       Choose a video file
-      <svg width="25" height="25" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1"
+        viewBox="0 0 24 24">
         <path
           d="M18.83,21.77c-.21-.18-.52-.16-.71,.04-.66,.75-1.62,1.19-2.62,1.19H4.5c-1.93,0-3.5-1.57-3.5-3.5V4.5c0-1.93,1.57-3.5,3.5-3.5h5.51c.33,0,.66,.03,.99,.09V6.5c0,1.38,1.12,2.5,2.5,2.5h5.41c.06,.32,.09,.65,.09,.99v.51c0,.28,.22,.5,.5,.5s.5-.22,.5-.5v-.51c0-1.74-.68-3.37-1.9-4.6l-3.48-3.48c-1.23-1.23-2.86-1.9-4.6-1.9H4.5C2.02,0,0,2.02,0,4.5v15c0,2.48,2.02,4.5,4.5,4.5H15.5c1.29,0,2.52-.56,3.38-1.52,.18-.21,.16-.52-.04-.71Zm-1.44-15.67c.55,.55,.97,1.2,1.24,1.9h-5.13c-.83,0-1.5-.67-1.5-1.5V1.37c.71,.27,1.35,.69,1.9,1.24l3.48,3.48Zm6.61,10.41c0,.5-.19,1-.58,1.38l-2.57,2.52c-.1,.09-.22,.14-.35,.14s-.26-.05-.36-.15c-.19-.2-.19-.51,0-.71l2.57-2.51c.06-.06,.1-.12,.14-.18H13.5c-.28,0-.5-.22-.5-.5s.22-.5,.5-.5h9.36c-.04-.07-.09-.13-.15-.19l-2.57-2.51c-.2-.19-.2-.51,0-.71,.19-.2,.51-.2,.71,0l2.57,2.51c.38,.38,.58,.89,.58,1.39,0,0,0,0,0,0s0,0,0,0Z" />
       </svg>
@@ -43,27 +44,28 @@
     </div>
     <div id="popup">
     </div>
-    
+
     <!-- upper controls -->
     <div id="video_header">
       <div id="upper_controls_container">
         <button class="control_btn" id="return" title="Return">
-          <img width="22" style="opacity: .8;" src="./icons/back.svg" alt="Return">
+          <img width="20" style="opacity: .8;" src="./icons/back.svg" alt="Return">
         </button>
         <button class="control_btn" id="addVid" title="Add local video" onclick="$('#video_file').click()">
-          <img width="22" style="opacity: .8;" src="./icons/add.svg" alt="Add">
+          <img width="20" style="opacity: .8;" src="./icons/add.svg" alt="Add">
         </button>
-        <input type="file" id="video_file" onchange="loadLocalVideo(); $('#centerLoadFileBtn').hide()" accept="video/*" hidden>
+        <input type="file" id="video_file" onchange="loadLocalVideo(); $('#centerLoadFileBtn').hide()" accept="video/*"
+          hidden>
         <div id="video_title_container">
           <h3 id="video_title"></h3>
         </div>
       </div>
       <div>
         <button class="control_btn" id="replay" title="Replay" onclick="player.replay()">
-          <img width="24" style="opacity: .9;" src="./icons/replay.svg" alt="Replay">
+          <img width="20" style="opacity: .9;" src="./icons/replay.svg" alt="Replay">
         </button>
         <button class="control_btn" id="aspectRatio" title="Change aspect ratio" onclick="player.changeAspectRatio()">
-          <img width="25" style="opacity: .9;" src="./icons/aspectRatio.svg" alt="16:9">
+          <img width="20" style="opacity: .9;" src="./icons/aspectRatio.svg" alt="16:9">
         </button>
       </div>
     </div>
@@ -79,17 +81,17 @@
       <div id="control_buttons">
         <div class="controls_grp center_controls">
           <button class="control_btn" id="playPause" title="Play Pause" onclick="player.playPause()">
-            <img width="20" src="./icons/play.svg" alt="Play">
+            <img width="18" src="./icons/play.svg" alt="Play">
           </button>
           <button class="control_btn" id="back" title="Backward" onclick="player.backward()">
-            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
+            <img width="18" class="control_icon" src="https://img.icons8.com/ios/50/replay-10.png" alt="replay-10" />
           </button>
           <button class="control_btn" id="forward" title="Forward" onclick="player.forward()">
-            <img width="20" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
+            <img width="18" class="control_icon" src="https://img.icons8.com/ios/50/forward-10.png" alt="forward-10" />
           </button>
           <div id="volume_controls_container">
             <button class="control_btn" id="toggleMute" title="Toggle Mute" onclick="player.toggleMute()">
-              <img width="20" src="./icons/volume.svg" alt="Vol">
+              <img width="18" src="./icons/volume.svg" alt="Vol">
             </button>
             <!-- <input type="range" id="volume" name="volume" class="control" title="volume" min="0" max="100" step="0.01" value="100" style="padding: 0; max-width: 60px;"> -->
           </div>
@@ -97,7 +99,7 @@
         <div class="controls_grp right_controls">
           <button class="control_btn" id="videoSpeed" title="Change speed" onclick="player.changeSpeed()">
             <span id="currentSpeed">1</span>
-            <img width="20" src="./icons/speed.svg" alt="Speed">
+            <img width="18" src="./icons/speed.svg" alt="Speed">
           </button>
           <button class="control_btn" title="Fullscreen" id="fullscreen" onclick="player.fullScreen()">
             <i class="fa-solid fa-expand" style="color: #ffffff;"></i>
